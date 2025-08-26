@@ -151,7 +151,7 @@ export default function Login() {
           fontSize: "14px", 
           textAlign: "center" 
         }}>
-          Login to continue your conversations
+          Login to continue your messages
         </p>
 
         <form

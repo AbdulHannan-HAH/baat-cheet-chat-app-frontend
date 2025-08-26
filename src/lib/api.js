@@ -26,11 +26,6 @@ export const authApi = {
   resend: (email) => API.post("/auth/resend", { email }), // Yeh bhi add karein
 };
 
-
-
-
-
-
 export const chatApi = {
   users: () => API.get("/chat/users"),
   conversations: () => API.get("/chat/conversations"),
@@ -44,6 +39,12 @@ export const chatApi = {
     fd.append("voice", blob, "voice.webm");
     return API.post("/chat/upload/voice", fd);
   },
+  // NEW: file upload
+  uploadFile: async (file) => {
+    const fd = new FormData();
+    fd.append("file", file);
+    return API.post("/chat/upload/file", fd);
+  },
 };
 
 
@@ -56,13 +57,6 @@ export const profileApi = {
       'Content-Type': 'multipart/form-data',
     },
   }),
-
-
-
-  
 };
+
 export default API;
-
-
-
-

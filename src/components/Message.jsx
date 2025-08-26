@@ -1,75 +1,66 @@
-import dayjs from 'dayjs';
+import { useState } from 'react';
+import FileAttachment from './FileAttachment';
+import './Message.css';
 
-export default function Message({ 
-  message, 
-  isMine, 
-  onReply, 
-  onDelete,
-  currentUser 
-}) {
-  const handleReply = () => {
-    onReply(message);
-  };
-
-  const handleDelete = () => {
-    onDelete(message._id);
-  };
+const Message = ({ message, isMine, onReply, onDelete, currentUser }) => {
+  const [showActions, setShowActions] = useState(false);
 
   return (
-    <div className={`message-container ${isMine ? 'mine' : 'theirs'}`}>
+    <div 
+      className={`message-container ${isMine ? 'outgoing' : 'incoming'}`}
+      onMouseEnter={() => setShowActions(true)}
+      onMouseLeave={() => setShowActions(false)}
+    >
       <div className={`message ${isMine ? 'outgoing' : 'incoming'}`}>
-        {/* Reply indicator if this is a reply */}
         {message.replyTo && (
-          <div className="message-reply">
-            <div className="reply-to">
-              Replying to {message.replyTo.from === currentUser._id ? 'yourself' : message.replyTo.fromName}
-            </div>
-            <div className="reply-content">
-              {message.replyTo.text && (
-                <div className="reply-text-preview">{message.replyTo.text}</div>
-              )}
-              {message.replyTo.voiceUrl && (
-                <div className="reply-voice-preview">🎤 Voice message</div>
-              )}
-            </div>
+          <div className="reply-preview">
+            <strong>{message.replyTo.fromName || 'User'}:</strong>
+            {message.replyTo.text || 'Voice message'}
           </div>
         )}
         
-        {/* Message content */}
         {message.text && <div className="message-text">{message.text}</div>}
+        
         {message.voiceUrl && (
-          <audio controls src={message.voiceUrl} className="voice-message" />
+          <audio controls className="voice-message">
+            <source src={message.voiceUrl} type="audio/webm" />
+            Your browser does not support the audio element.
+          </audio>
+        )}
+        
+        {/* File attachments */}
+        {message.attachments && message.attachments.length > 0 && (
+          <div className="attachments-container">
+            {message.attachments.map((attachment, index) => (
+              <FileAttachment key={index} attachment={attachment} />
+            ))}
+          </div>
         )}
         
         <div className="message-time">
-          {dayjs(message.createdAt).format('hh:mm A')}
+          {new Date(message.createdAt).toLocaleTimeString()}
           {isMine && (
             <span className="message-status">
-              {message.seenAt ? ' ✓✓' : (message.deliveredAt ? ' ✓' : '')}
+              {message.seenAt ? '✓✓' : message.deliveredAt ? '✓' : ''}
             </span>
           )}
         </div>
         
-        {/* Message actions */}
-        <div className="message-actions">
-          <button
-            onClick={handleReply}
-            className="message-action reply-action"
-            title="Reply"
-          >
-            ↪
-          </button>
-          {isMine && (
-            <button
-              onClick={handleDelete}
-              className="message-action delete-action"
-              title="Delete message"
-            >
-              ×
+        {showActions && (
+          <div className="message-actions">
+            <button onClick={() => onReply(message)} title="Reply">
+              ↩️
             </button>
-          )}
-        </div>
+            {isMine && (
+              <button onClick={() => onDelete(message._id)} title="Delete">
+                🗑️
+              </button>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
-}
+};
+
+export default Message;

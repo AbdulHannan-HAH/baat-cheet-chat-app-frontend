@@ -33,6 +33,7 @@ export default function Chat() {
 
   const [replyingTo, setReplyingTo] = useState(null);
 const [replyText, setReplyText] = useState('');
+const [uploadingFile, setUploadingFile] = useState(false);
 
 
   
@@ -348,6 +349,44 @@ const cancelReply = () => {
     setMessages([]);
     setConversationId(null);
   };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  const handleFileUpload = async (file) => {
+  if (!activeUser) return;
+  
+  setUploadingFile(true);
+  try {
+    const { data } = await chatApi.uploadFile(file);
+    
+    // Send message with file attachment
+    socket.emit('message:send', {
+      to: activeUser._id,
+      attachments: [data.file],
+      text: `Sent a file: ${file.name}`
+    });
+  } catch (error) {
+    console.error('File upload failed:', error);
+    alert('File upload failed. Please try again.');
+  } finally {
+    setUploadingFile(false);
+  }
+};
+
 
   // =============== JARVIS: Speech Recognition ===============
   // =============== JARVIS: Speech Recognition ===============
@@ -878,7 +917,23 @@ const sendByAssistant = (user, text) => {
       replyingTo={replyingTo} 
       onCancelReply={cancelReply} 
     />
+    
+
+
               <div className="input-row">
+
+                <input
+  type="file"
+  id="file-upload"
+  style={{ display: 'none' }}
+  onChange={(e) => {
+    if (e.target.files && e.target.files[0]) {
+      handleFileUpload(e.target.files[0]);
+    }
+    e.target.value = ''; // Reset input
+  }}
+  accept="*/*" // Accept all file types
+/>
                 <button
                   onMouseDown={startRecording}
                   onMouseUp={stopRecording}
@@ -887,7 +942,14 @@ const sendByAssistant = (user, text) => {
                 >
                   {recording ? '🎙️' : '🎤'}
                 </button>
-
+<button
+  onClick={() => document.getElementById('file-upload').click()}
+  className="file-button"
+  title="Attach file"
+  disabled={uploadingFile || !activeUser}
+>
+  {uploadingFile ? '📤' : '📎'}
+</button>
                 <div className="text-input-container">
                   <textarea
                     value={input}
