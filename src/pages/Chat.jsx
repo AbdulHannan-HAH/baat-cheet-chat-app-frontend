@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 
 import ReplyBar from '../components/ReplyBar';
 import Message from '../components/Message';
-import '../components/ReplyBar.css';
+import '../components/Replybar.css';
 import '../components/Message.css';
 dayjs.extend(relativeTime);
 
