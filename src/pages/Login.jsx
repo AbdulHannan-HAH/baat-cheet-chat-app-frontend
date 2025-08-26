@@ -13,19 +13,24 @@ export default function Login() {
   const [needsVerification, setNeedsVerification] = useState(false);
 
   const submit = async (e) => {
-    e.preventDefault();
-    try {
-      const { data } = await authApi.login({ email, password });
-      setUser(data.user);
-      toast.success("Login successful!");
-      if (!data.user.avatarUrl) nav("/avatar-picker");
-      else nav("/");
-    } catch (e) {
-      const msg = e?.response?.data?.message || "Login failed";
-      toast.error(msg);
-      if (e?.response?.data?.needsVerification) setNeedsVerification(true);
-    }
-  };
+  e.preventDefault();
+  try {
+    const { data } = await authApi.login({ email, password });
+    
+    // yahan token save karo
+    localStorage.setItem("token", data.token);
+
+    setUser(data.user);
+    toast.success("Login successful!");
+    if (!data.user.avatarUrl) nav("/avatar-picker");
+    else nav("/");
+  } catch (e) {
+    const msg = e?.response?.data?.message || "Login failed";
+    toast.error(msg);
+    if (e?.response?.data?.needsVerification) setNeedsVerification(true);
+  }
+};
+
 
   const resend = async () => {
     try {
