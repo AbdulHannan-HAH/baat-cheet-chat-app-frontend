@@ -480,7 +480,7 @@ const getEmojiByName = (name) => {
     'pray': '🙏', 'thanks': '🙏', 'please': '🙏', 'grateful': '🙏',
     'fire': '🔥', 'lit': '🔥', 'hot': '🔥',
     'sun': '☀️', 'sunny': '☀️',
-    'moon': '🌙', 'night': '🌙',
+    'moon': '🌙', 
     'star': '⭐', 'stars': '⭐',
     'flower': '🌸', 'flowers': '🌸',
     'gift': '🎁', 'present': '🎁',
