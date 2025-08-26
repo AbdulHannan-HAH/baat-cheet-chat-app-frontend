@@ -1,10 +1,18 @@
-import { io } from 'socket.io-client';
+// src/utils/socket.js (ya jahan tum rakhtay ho)
+import { io } from "socket.io-client";
 
 let socket;
+
 export function getSocket() {
   if (!socket) {
-    socket = io('http://localhost:5000', {
-      withCredentials: true, // send cookie for auth
+    // agar development mode hai to localhost use karo
+    const backendUrl =
+      import.meta.env.MODE === "development"
+        ? "http://localhost:5000"
+        : "https://baatcheet-backend-s5cs.onrender.com";
+
+    socket = io(backendUrl, {
+      withCredentials: true, // cookies bhejne ke liye
       autoConnect: true,
     });
   }
