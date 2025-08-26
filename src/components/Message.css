@@ -1,0 +1,135 @@
+.message-container {
+  margin: 0.5rem 0;
+  display: flex;
+}
+
+.message-container.mine {
+  justify-content: flex-end;
+}
+
+.message-container.theirs {
+  justify-content: flex-start;
+}
+
+.message {
+  max-width: 70%;
+  padding: 0.75rem;
+  border-radius: 12px;
+  position: relative;
+}
+
+.message.outgoing {
+  background: #3182ce;
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+
+.message.incoming {
+  background: #f7fafc;
+  color: #2d3748;
+  border-bottom-left-radius: 4px;
+  border: 1px solid #e2e8f0;
+}
+
+.message-reply {
+  background: rgba(0, 0, 0, 0.1);
+  border-left: 3px solid #3182ce;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  border-radius: 6px;
+}
+
+.message.outgoing .message-reply {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.reply-to {
+  font-size: 0.75rem;
+  opacity: 0.8;
+  margin-bottom: 0.25rem;
+}
+
+.reply-content {
+  font-size: 0.85rem;
+}
+
+.reply-text-preview {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 150px;
+}
+
+.reply-voice-preview {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+}
+
+.message-text {
+  word-wrap: break-word;
+  line-height: 1.4;
+}
+
+.voice-message {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.message-time {
+  font-size: 0.7rem;
+  opacity: 0.7;
+  margin-top: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.message-actions {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: none;
+  gap: 0.25rem;
+}
+
+.message:hover .message-actions {
+  display: flex;
+}
+
+.message-action {
+  background: rgba(0, 0, 0, 0.1);
+  border: none;
+  border-radius: 4px;
+  padding: 0.25rem;
+  cursor: pointer;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+.message.outgoing .message-action {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.message-action:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.message.outgoing .message-action:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.reply-action {
+  font-size: 0.7rem;
+}
+
+.delete-action {
+  font-size: 1rem;
+}
+
