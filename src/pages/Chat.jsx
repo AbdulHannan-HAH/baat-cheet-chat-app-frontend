@@ -313,6 +313,7 @@ useEffect(() => {
 };
 
 const handleShowProfile = (user) => {
+  console.log('User object:', user); // 👈 Yeh line add karein
   setShowProfileDetails(user);
 };
 
