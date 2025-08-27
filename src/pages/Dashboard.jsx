@@ -139,7 +139,7 @@ export default function Dashboard() {
 
       {/* Footer */}
       <footer className="dashboard-footer">
-        <p>© 2023 ChatApp. Built with ❤️ by Hafiz Abdul Hannan</p>
+        <p>© 2025 BaatCheet. Built with ❤️ by Hafiz Abdul Hannan</p>
       </footer>
     </div>
   );
