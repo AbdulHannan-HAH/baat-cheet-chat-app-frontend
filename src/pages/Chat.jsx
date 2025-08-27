@@ -37,6 +37,20 @@ const [uploadingFile, setUploadingFile] = useState(false);
 
 
   
+
+
+
+
+
+
+
+
+const [showProfileDetails, setShowProfileDetails] = useState(null);
+
+
+
+
+
   // === Jarvis state ===
   const [listening, setListening] = useState(false);
   const [recognizing, setRecognizing] = useState(false);
@@ -296,6 +310,15 @@ useEffect(() => {
   setInput('');
   setReplyingTo(null);
   setReplyText('');
+};
+
+const handleShowProfile = (user) => {
+  setShowProfileDetails(user);
+};
+
+// Add this function to close profile details
+const handleCloseProfile = () => {
+  setShowProfileDetails(null);
 };
 
   const startTyping = () => { if (activeUser) socket.emit('typing:start', { to: activeUser._id }); };
@@ -766,10 +789,15 @@ const sendByAssistant = (user, text) => {
                   className={`user-button ${activeUser?._id === u._id ? 'active' : ''}`}
                 >
                   <img
-                    src={u.avatarUrl || `https://api.dicebear.com/7.x/bottts/svg?seed=${u._id}`}
-                    alt=""
-                    className="avatar"
-                  />
+  src={u.avatarUrl || `https://api.dicebear.com/7.x/bottts/svg?seed=${u._id}`}
+  alt=""
+  className="avatar"
+  onClick={(e) => {
+    e.stopPropagation();
+    handleShowProfile(u);
+  }}
+  style={{cursor: 'pointer'}}
+/>
                   <div className="user-info">
                     <div className="user-name">
                       {u.name || 'User'}
@@ -1007,6 +1035,48 @@ const sendByAssistant = (user, text) => {
           )}
         </section>
       )}
+
+
+
+
+
+      {showProfileDetails && (
+  <div className="profile-modal-overlay" onClick={handleCloseProfile}>
+    <div className="profile-modal-content" onClick={(e) => e.stopPropagation()}>
+      <div className="profile-modal-header">
+        <h3>Profile Details</h3>
+        <button className="close-button" onClick={handleCloseProfile}>×</button>
+      </div>
+      <div className="profile-modal-body">
+        <div className="profile-avatar-large">
+          <img
+            src={showProfileDetails.avatarUrl || `https://api.dicebear.com/7.x/bottts/svg?seed=${showProfileDetails._id}`}
+            alt={showProfileDetails.name}
+          />
+        </div>
+        <div className="profile-details">
+          <h4>{showProfileDetails.name || 'User'}</h4>
+          <p className="profile-email">{showProfileDetails.email}</p>
+          {showProfileDetails.bio && (
+            <p className="profile-bio">{showProfileDetails.bio}</p>
+          )}
+          {showProfileDetails.phone && (
+            <p className="profile-phone">📞 {showProfileDetails.phone}</p>
+          )}
+          <div className="profile-status">
+            {showProfileDetails.online ? (
+              <span className="online-status">🟢 Online</span>
+            ) : (
+              <span className="offline-status">
+                Last seen {showProfileDetails.lastSeen ? dayjs(showProfileDetails.lastSeen).fromNow() : 'a long time ago'}
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
     </div>
   );
 }

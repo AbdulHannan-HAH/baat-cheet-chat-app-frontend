@@ -1038,3 +1038,114 @@
 
 
 
+
+
+
+
+
+
+
+/* Profile Modal Styles */
+.profile-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.profile-modal-content {
+  background: white;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.profile-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.profile-modal-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #6b7280;
+}
+
+.close-button:hover {
+  color: #374151;
+}
+
+.profile-modal-body {
+  padding: 20px;
+  text-align: center;
+}
+
+.profile-avatar-large {
+  margin-bottom: 16px;
+}
+
+.profile-avatar-large img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #e5e7eb;
+}
+
+.profile-details h4 {
+  margin: 0 0 8px 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.profile-email {
+  color: #6b7280;
+  margin: 0 0 12px 0;
+}
+
+.profile-bio {
+  margin: 12px 0;
+  padding: 12px;
+  background: #f9fafb;
+  border-radius: 8px;
+  font-style: italic;
+}
+
+.profile-phone {
+  margin: 8px 0;
+  color: #4b5563;
+}
+
+.profile-status {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.online-status {
+  color: #059669;
+  font-weight: 500;
+}
+
+.offline-status {
+  color: #6b7280;
+}
