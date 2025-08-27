@@ -14,8 +14,8 @@ import Profile from "./pages/ProfilePage";
 // ek wrapper banate hain taki useLocation access ho jaye
 function AppRoutes() {
   const location = useLocation();
+  const { loading } = useAuth();
 
-  // agar user login/register/verify-email page pe hai → navbar hide
   const hideNavbar =
     location.pathname === "/login" ||
     location.pathname === "/register" ||
@@ -23,8 +23,9 @@ function AppRoutes() {
 
   return (
     <>
-      {!hideNavbar && <Navbar />}
-      <Routes>
+    
+ {!hideNavbar && !loading && <Navbar />}
+       <Routes>
         <Route
           path="/"
           element={
