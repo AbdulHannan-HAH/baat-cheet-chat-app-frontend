@@ -882,3 +882,155 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+
+
+
+
+
+
+
+
+
+/* Input Area - Fix for mobile alignment */
+.input-area {
+  padding: 12px 16px;
+  border-top: 1px solid #e2e8f0;
+  background-color: white;
+}
+
+.input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap;
+  width: 100%;
+}
+
+/* Text Input Container - Adjusted for mobile */
+.text-input-container {
+  flex: 1;
+  min-width: 0; /* Important for flexbox shrinking */
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: #f8fafc;
+  border-radius: 24px;
+  border: 2px solid #e2e8f0;
+  transition: all 0.2s ease;
+}
+
+/* Text Input - Adjusted for mobile */
+.text-input {
+  flex: 1;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 24px;
+  font-size: 16px;
+  font-family: inherit;
+  background-color: transparent;
+  resize: none;
+  outline: none;
+  max-height: 120px;
+  min-height: 44px;
+  line-height: 1.4;
+  min-width: 0; /* Allows textarea to shrink properly */
+}
+
+/* Input Actions - Adjusted for mobile */
+.input-actions {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding-right: 8px;
+  flex-shrink: 0;
+}
+
+/* Buttons - Ensure consistent sizing on mobile */
+.voice-button,
+.file-button,
+.send-button {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Emoji Button - Adjusted for mobile */
+.emoji-button {
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+/* Emoji Picker - Adjusted for mobile */
+.emoji-picker {
+  position: absolute;
+  bottom: 100%;
+  right: -50px;
+  margin-bottom: 8px;
+  z-index: 1000;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  transform: scale(0.9);
+  transform-origin: bottom right;
+}
+
+/* Make sure all buttons are properly aligned */
+.voice-button,
+.file-button,
+.send-button,
+.emoji-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ensure file button is properly styled */
+.file-button {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.file-button:hover:not(:disabled) {
+  background-color: #e2e8f0;
+}
+
+.file-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Media query adjustments for very small screens */
+@media (max-width: 360px) {
+  .input-row {
+    gap: 6px;
+  }
+  
+  .voice-button,
+  .file-button,
+  .send-button {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
+  
+  .text-input {
+    font-size: 15px;
+    padding: 8px 12px;
+  }
+}
