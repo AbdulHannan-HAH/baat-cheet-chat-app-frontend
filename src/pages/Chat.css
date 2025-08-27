@@ -4,11 +4,6 @@
   height: 100vh;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   background-color: #f8fafc;
-
-
-
-  
-  overflow: hidden; /* Prevent overall scrolling */
 }
 
 @media (max-width: 768px) {
@@ -26,8 +21,6 @@
   flex-direction: column;
   background-color: white;
   box-shadow: 2px 0 10px rgba(0,0,0,0.05);
-    overflow: hidden; /* Prevent sidebar from scrolling */
-
 }
 
 .chat-sidebar.hidden {
@@ -47,8 +40,6 @@
   padding: 16px;
   border-bottom: 1px solid #e2e8f0;
   background-color: #f8fafc;
-    flex-shrink: 0; /* Prevent search box from shrinking */
-
 }
 
 @media (max-width: 768px) {
@@ -244,8 +235,6 @@
   flex-direction: column;
   background-color: white;
   position: relative;
-    overflow: hidden; /* Prevent window from scrolling */
-
 }
 
 .chat-window.hidden {
@@ -271,8 +260,6 @@
   background-color: white;
   z-index: 10;
   box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    flex-shrink: 0; /* Prevent header from shrinking */
-
 }
 
 @media (max-width: 768px) {
@@ -947,6 +934,7 @@
   max-height: 120px;
   min-height: 44px;
   line-height: 1.4;
+  width:70%;
   min-width: 0; /* Allows textarea to shrink properly */
 }
 
@@ -1050,29 +1038,3 @@
 
 
 
-
-
-
-
-/* Custom scrollbar for better appearance */
-.user-list::-webkit-scrollbar,
-.messages-container::-webkit-scrollbar {
-  width: 6px;
-}
-
-.user-list::-webkit-scrollbar-track,
-.messages-container::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 10px;
-}
-
-.user-list::-webkit-scrollbar-thumb,
-.messages-container::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 10px;
-}
-
-.user-list::-webkit-scrollbar-thumb:hover,
-.messages-container::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
-}
