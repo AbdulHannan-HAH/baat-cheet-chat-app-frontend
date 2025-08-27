@@ -934,7 +934,14 @@ const sendByAssistant = (user, text) => {
   }}
   accept="*/*" // Accept all file types
 />
-                
+               {/* <button
+                  onMouseDown={startRecording}
+                  onMouseUp={stopRecording}
+                  className="voice-button"
+                  title="Hold to record voice message"
+                >
+                  {recording ? '🎙️' : '🎤'}
+                </button>*/}
 <button
   onClick={() => document.getElementById('file-upload').click()}
   className="file-button"
