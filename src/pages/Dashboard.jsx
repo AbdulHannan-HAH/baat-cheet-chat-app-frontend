@@ -8,11 +8,6 @@ export default function Dashboard() {
   const { user } = useAuth();
   const nav = useNavigate();
   const [activeTab, setActiveTab] = useState("features");
-  const [stats, setStats] = useState({
-    chats: 12,
-    connections: 47,
-    streak: 5
-  });
 
   useEffect(() => {
     if (user && !user.avatarUrl) nav("/avatar-picker");
@@ -26,9 +21,9 @@ export default function Dashboard() {
       description: "Control the app with voice commands in both English and Urdu"
     },
     {
-      icon: "🎙️",
-      title: "Voice Messages",
-      description: "Send and receive voice notes with one tap"
+      icon: "🖼️",
+      title: "Image and Videos Sharing",
+      description: "Easily share your images and videos with friends"
     },
     {
       icon: "😊",
@@ -62,39 +57,6 @@ export default function Dashboard() {
         </div>
         <div className="avatar-section">
           <Avatar name={user?.name} src={user?.avatarUrl} size={60} />
-        </div>
-      </div>
-
-      {/* Stats Cards */}
-      <div className="stats-grid">
-        <div className="stat-card" style={{ animationDelay: "0.1s" }}>
-          <div className="stat-icon" style={{ backgroundColor: "rgba(79, 70, 229, 0.1)" }}>
-            <i className="fas fa-comment" style={{ color: "#4f46e5" }}></i>
-          </div>
-          <div className="stat-info">
-            <h3>{stats.chats}</h3>
-            <p>Active Chats</p>
-          </div>
-        </div>
-
-        <div className="stat-card" style={{ animationDelay: "0.2s" }}>
-          <div className="stat-icon" style={{ backgroundColor: "rgba(239, 68, 68, 0.1)" }}>
-            <i className="fas fa-users" style={{ color: "#ef4444" }}></i>
-          </div>
-          <div className="stat-info">
-            <h3>{stats.connections}</h3>
-            <p>Connections</p>
-          </div>
-        </div>
-
-        <div className="stat-card" style={{ animationDelay: "0.3s" }}>
-          <div className="stat-icon" style={{ backgroundColor: "rgba(16, 185, 129, 0.1)" }}>
-            <i className="fas fa-fire" style={{ color: "#10b981" }}></i>
-          </div>
-          <div className="stat-info">
-            <h3>{stats.streak}</h3>
-            <p>Day Streak</p>
-          </div>
         </div>
       </div>
 
