@@ -5,6 +5,8 @@
   min-height: 100vh;
   position: relative;
   padding-bottom: 80px;
+  background-color: var(--bg-color, #ffffff);
+  color: var(--text-color, #000000);
 }
 
 .dashboard-header {
@@ -17,18 +19,18 @@
 .welcome-section h1 {
   font-size: 2rem;
   margin: 0;
-  color: #333;
+  color: var(--heading-color, #333);
 }
 
 .welcome-section p {
   margin: 5px 0 0;
-  color: #666;
+  color: var(--muted-text-color, #666);
 }
 
 /* Tabs */
 .tabs-container {
   display: flex;
-  background: white;
+  background: var(--card-bg, white);
   border-radius: 15px;
   padding: 5px;
   margin-bottom: 30px;
@@ -47,12 +49,12 @@
   justify-content: center;
   gap: 8px;
   font-weight: 500;
-  color: #666;
+  color: var(--muted-text-color, #666);
   transition: all 0.3s ease;
 }
 
 .tab.active {
-  background: #4f46e5;
+  background: var(--primary-color, #4f46e5);
   color: white;
 }
 
@@ -69,12 +71,13 @@
 }
 
 .feature-card {
-  background: white;
+  background: var(--card-bg, white);
   border-radius: 15px;
   padding: 25px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   text-align: center;
   transition: transform 0.3s ease;
+  color: var(--text-color, #000000);
 }
 
 .feature-card:hover {
@@ -88,21 +91,22 @@
 
 .feature-card h3 {
   margin: 0 0 10px;
-  color: #333;
+  color: var(--heading-color, #333);
 }
 
 .feature-card p {
   margin: 0;
-  color: #666;
+  color: var(--muted-text-color, #666);
   line-height: 1.5;
 }
 
 /* Developer Section */
 .developer-card {
-  background: white;
+  background: var(--card-bg, white);
   border-radius: 15px;
   padding: 30px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  color: var(--text-color, #000000);
 }
 
 .developer-header {
@@ -116,17 +120,17 @@
   height: 80px;
   border-radius: 50%;
   margin-right: 20px;
-  border: 3px solid #4f46e5;
+  border: 3px solid var(--primary-color, #4f46e5);
 }
 
 .developer-info h2 {
   margin: 0 0 5px;
-  color: #333;
+  color: var(--heading-color, #333);
 }
 
 .developer-info p {
   margin: 0;
-  color: #666;
+  color: var(--muted-text-color, #666);
 }
 
 .developer-bio {
@@ -134,13 +138,13 @@
 }
 
 .developer-bio p {
-  color: #666;
+  color: var(--muted-text-color, #666);
   line-height: 1.6;
 }
 
 .developer-skills h3 {
   margin: 0 0 15px;
-  color: #333;
+  color: var(--heading-color, #333);
 }
 
 .skills-list {
@@ -151,7 +155,7 @@
 
 .skill-tag {
   background: rgba(79, 70, 229, 0.1);
-  color: #4f46e5;
+  color: var(--primary-color, #4f46e5);
   padding: 5px 15px;
   border-radius: 20px;
   font-size: 0.9rem;
@@ -169,7 +173,7 @@
 }
 
 .go-to-chats-btn {
-  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  background: linear-gradient(135deg, var(--primary-color, #4f46e5), var(--secondary-color, #7c3aed));
   color: white;
   border: none;
   border-radius: 50px;
@@ -197,13 +201,13 @@
   right: 0;
   text-align: center;
   padding: 20px;
-  background: white;
-  border-top: 1px solid #eee;
+  background: var(--card-bg, white);
+  border-top: 1px solid var(--border-color, #eee);
 }
 
 .dashboard-footer p {
   margin: 0;
-  color: #666;
+  color: var(--muted-text-color, #666);
 }
 
 /* Animations */
@@ -216,6 +220,61 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* User Manual */
+.manual-card {
+  background: var(--card-bg, white);
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  animation: fadeInUp 0.5s ease;
+  color: var(--text-color, #000000);
+}
+
+.manual-card h2 {
+  margin-bottom: 20px;
+  color: var(--heading-color, #333);
+}
+
+.manual-section {
+  margin-bottom: 20px;
+}
+
+.manual-section h3 {
+  color: var(--primary-color, #4f46e5);
+  margin-bottom: 10px;
+}
+
+.manual-section ul {
+  list-style: disc;
+  margin-left: 20px;
+  color: var(--muted-text-color, #555);
+  line-height: 1.6;
+}
+
+/* Dark mode variables */
+[data-theme="dark"] {
+  --bg-color: #1a1a1a;
+  --text-color: #f5f5f5;
+  --heading-color: #ffffff;
+  --muted-text-color: #cccccc;
+  --card-bg: #2d2d2d;
+  --border-color: #444444;
+  --primary-color: #6366f1;
+  --secondary-color: #818cf8;
+}
+
+/* Light mode variables */
+[data-theme="light"] {
+  --bg-color: #ffffff;
+  --text-color: #000000;
+  --heading-color: #333333;
+  --muted-text-color: #666666;
+  --card-bg: #ffffff;
+  --border-color: #eeeeee;
+  --primary-color: #4f46e5;
+  --secondary-color: #7c3aed;
 }
 
 /* Responsive design */
@@ -244,38 +303,4 @@
     padding: 12px 25px;
     font-size: 1rem;
   }
-}
-
-
-
-
-
-/* User Manual */
-.manual-card {
-  background: white;
-  border-radius: 15px;
-  padding: 30px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  animation: fadeInUp 0.5s ease;
-}
-
-.manual-card h2 {
-  margin-bottom: 20px;
-  color: #333;
-}
-
-.manual-section {
-  margin-bottom: 20px;
-}
-
-.manual-section h3 {
-  color: #4f46e5;
-  margin-bottom: 10px;
-}
-
-.manual-section ul {
-  list-style: disc;
-  margin-left: 20px;
-  color: #555;
-  line-height: 1.6;
 }

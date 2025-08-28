@@ -5,7 +5,7 @@ import Avatar from "../components/Avatar";
 import "./Dashboard.css"; 
 
 export default function Dashboard() {
-  const { user } = useAuth();
+  const { user, theme } = useAuth();
   const nav = useNavigate();
   const [activeTab, setActiveTab] = useState("features");
 
@@ -24,7 +24,7 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="dashboard-container">
+    <div className="dashboard-container" data-theme={theme}>
       {/* Header Section */}
       <div className="dashboard-header">
         <div className="welcome-section">
@@ -135,7 +135,7 @@ export default function Dashboard() {
             <div className="manual-section">
               <h3>📅 Date & Time</h3>
               <ul>
-                <li><b>English:</b> "What is today’s date?" / "What time is it now?"</li>
+                <li><b>English:</b> "What is today's date?" / "What time is it now?"</li>
                 <li><b>Urdu:</b> "Aaj ki tareekh kya hai?" / "Abhi kitna time hua hai?"</li>
               </ul>
             </div>

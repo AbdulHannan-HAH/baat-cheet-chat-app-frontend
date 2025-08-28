@@ -2,9 +2,10 @@ import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../context/AuthContext";
 import { profileApi } from "../lib/api";
 import EmojiPicker from "emoji-picker-react";
+import "./Dashboard.css";
 
 export default function ProfilePage() {
-  const { user, setUser } = useAuth();
+  const { user, setUser, theme } = useAuth();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -165,31 +166,32 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div style={{ padding: "40px 20px", textAlign: "center" }}>
+      <div style={{ padding: "40px 20px", textAlign: "center", color: theme === 'dark' ? '#f5f5f5' : '#000000' }}>
         <div>Loading profile...</div>
       </div>
     );
   }
 
   return (
-    <div style={{ maxWidth: "800px", margin: "0 auto", padding: "40px 20px" }}>
+    <div className="dashboard-container" data-theme={theme} style={{ maxWidth: "800px", margin: "0 auto", padding: "40px 20px" }}>
       <div style={{ 
-        backgroundColor: "white", 
+        backgroundColor: "var(--card-bg, white)", 
         borderRadius: "16px", 
         padding: "32px",
-        boxShadow: "0 4px 6px rgba(0,0,0,0.1)"
+        boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+        color: "var(--text-color, #000000)"
       }}>
-        <h1 style={{ fontSize: "28px", fontWeight: "bold", marginBottom: "8px" }}>
+        <h1 style={{ fontSize: "28px", fontWeight: "bold", marginBottom: "8px", color: "var(--heading-color, #333)" }}>
           Profile Settings
         </h1>
-        <p style={{ color: "#6b7280", marginBottom: "32px" }}>
+        <p style={{ color: "var(--muted-text-color, #6b7280)", marginBottom: "32px" }}>
           Manage your account information
         </p>
 
         {message && (
           <div style={{ 
             color: "green", 
-            backgroundColor: "#f0fdf4",
+            backgroundColor: theme === 'dark' ? '#1a3a1f' : '#f0fdf4',
             padding: "12px 16px",
             borderRadius: "8px",
             marginBottom: "24px",
@@ -202,7 +204,7 @@ export default function ProfilePage() {
         {error && (
           <div style={{ 
             color: "red", 
-            backgroundColor: "#fef2f2",
+            backgroundColor: theme === 'dark' ? '#3a1a1a' : '#fef2f2',
             padding: "12px 16px",
             borderRadius: "8px",
             marginBottom: "24px",
@@ -219,9 +221,9 @@ export default function ProfilePage() {
           alignItems: "center", 
           marginBottom: "32px",
           paddingBottom: "24px",
-          borderBottom: "1px solid #e5e7eb"
+          borderBottom: "1px solid var(--border-color, #e5e7eb)"
         }}>
-          <h3 style={{ fontSize: "18px", fontWeight: "600", marginBottom: "16px", alignSelf: "flex-start" }}>
+          <h3 style={{ fontSize: "18px", fontWeight: "600", marginBottom: "16px", alignSelf: "flex-start", color: "var(--heading-color, #333)" }}>
             Profile Picture
           </h3>
           
@@ -232,7 +234,7 @@ export default function ProfilePage() {
               borderRadius: "50%",
               overflow: "hidden",
               marginBottom: "16px",
-              border: "3px solid #e5e7eb",
+              border: "3px solid var(--border-color, #e5e7eb)",
               position: "relative"
             }}>
               <img
@@ -278,7 +280,7 @@ export default function ProfilePage() {
               disabled={uploading}
               style={{
                 width: "100%",
-                backgroundColor: uploading ? "#9ca3af" : "#2563eb",
+                backgroundColor: uploading ? "var(--muted-text-color, #9ca3af)" : "var(--primary-color, #2563eb)",
                 color: "white",
                 padding: "10px 16px",
                 border: "none",
@@ -292,7 +294,7 @@ export default function ProfilePage() {
               {uploading ? "Uploading..." : "Upload New Avatar"}
             </button>
             
-            <p style={{ fontSize: "12px", color: "#6b7280", textAlign: "center" }}>
+            <p style={{ fontSize: "12px", color: "var(--muted-text-color, #6b7280)", textAlign: "center" }}>
               JPG, PNG, GIF up to 5MB
             </p>
           </div>
@@ -302,7 +304,7 @@ export default function ProfilePage() {
         <div>
           <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
             <div>
-              <label style={{ display: "block", fontSize: "14px", fontWeight: "500", marginBottom: "6px", color: "#374151" }}>
+              <label style={{ display: "block", fontSize: "14px", fontWeight: "500", marginBottom: "6px", color: "var(--heading-color, #374151)" }}>
                 Full Name *
               </label>
               <input
@@ -315,14 +317,16 @@ export default function ProfilePage() {
                   width: "100%",
                   padding: "10px 12px",
                   borderRadius: "8px",
-                  border: "1px solid #d1d5db",
-                  fontSize: "16px"
+                  border: "1px solid var(--border-color, #d1d5db)",
+                  fontSize: "16px",
+                  backgroundColor: "var(--card-bg, white)",
+                  color: "var(--text-color, #000000)"
                 }}
               />
             </div>
 
             <div>
-              <label style={{ display: "block", fontSize: "14px", fontWeight: "500", marginBottom: "6px", color: "#374151" }}>
+              <label style={{ display: "block", fontSize: "14px", fontWeight: "500", marginBottom: "6px", color: "var(--heading-color, #374151)" }}>
                 Email Address
               </label>
               <input
@@ -333,32 +337,33 @@ export default function ProfilePage() {
                   width: "100%",
                   padding: "10px 12px",
                   borderRadius: "8px",
-                  border: "1px solid #e5e7eb",
-                  backgroundColor: "#f9fafb",
-                  color: "#6b7280",
+                  border: "1px solid var(--border-color, #e5e7eb)",
+                  backgroundColor: "var(--bg-color, #f9fafb)",
+                  color: "var(--muted-text-color, #6b7280)",
                   fontSize: "16px"
                 }}
               />
-              <p style={{ fontSize: "12px", color: "#6b7280", marginTop: "4px" }}>
+              <p style={{ fontSize: "12px", color: "var(--muted-text-color, #6b7280)", marginTop: "4px" }}>
                 Email cannot be changed
               </p>
             </div>
 
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                <label style={{ fontSize: "14px", fontWeight: "500", color: "#374151" }}>
+                <label style={{ fontSize: "14px", fontWeight: "500", color: "var(--heading-color, #374151)" }}>
                   Bio
                 </label>
                 <button
                   type="button"
                   onClick={toggleEmojiPicker}
                   style={{
-                    background: 'none',
-                    border: '1px solid #d1d5db',
+                    background: 'var(--card-bg, white)',
+                    border: '1px solid var(--border-color, #d1d5db)',
                     borderRadius: '6px',
                     padding: '8px',
                     cursor: 'pointer',
-                    fontSize: '18px'
+                    fontSize: '18px',
+                    color: 'var(--text-color, #000000)'
                   }}
                 >
                   😊
@@ -372,6 +377,7 @@ export default function ProfilePage() {
                     width={300}
                     height={400}
                     previewConfig={{ showPreview: false }}
+                    theme={theme === 'dark' ? 'dark' : 'light'}
                   />
                 </div>
               )}
@@ -387,20 +393,22 @@ export default function ProfilePage() {
                   width: "100%",
                   padding: "10px 12px",
                   borderRadius: "8px",
-                  border: "1px solid #d1d5db",
+                  border: "1px solid var(--border-color, #d1d5db)",
                   fontSize: "16px",
                   resize: "vertical",
                   fontFamily: "inherit",
-                  marginTop: "5px"
+                  marginTop: "5px",
+                  backgroundColor: "var(--card-bg, white)",
+                  color: "var(--text-color, #000000)"
                 }}
               />
-              <p style={{ fontSize: "12px", color: "#6b7280", marginTop: "4px" }}>
+              <p style={{ fontSize: "12px", color: "var(--muted-text-color, #6b7280)", marginTop: "4px" }}>
                 Click the smiley button to add emojis
               </p>
             </div>
 
             <div>
-              <label style={{ display: "block", fontSize: "14px", fontWeight: "500", marginBottom: "6px", color: "#374151" }}>
+              <label style={{ display: "block", fontSize: "14px", fontWeight: "500", marginBottom: "6px", color: "var(--heading-color, #374151)" }}>
                 Phone Number
               </label>
               <input
@@ -413,8 +421,10 @@ export default function ProfilePage() {
                   width: "100%",
                   padding: "10px 12px",
                   borderRadius: "8px",
-                  border: "1px solid #d1d5db",
-                  fontSize: "16px"
+                  border: "1px solid var(--border-color, #d1d5db)",
+                  fontSize: "16px",
+                  backgroundColor: "var(--card-bg, white)",
+                  color: "var(--text-color, #000000)"
                 }}
               />
             </div>
@@ -425,7 +435,7 @@ export default function ProfilePage() {
                 disabled={saving}
                 style={{
                   width: "100%",
-                  backgroundColor: saving ? "#9ca3af" : "#2563eb",
+                  backgroundColor: saving ? "var(--muted-text-color, #9ca3af)" : "var(--primary-color, #2563eb)",
                   color: "white",
                   padding: "12px 20px",
                   border: "none",
