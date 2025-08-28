@@ -6,15 +6,15 @@ import { useAuth } from "../context/AuthContext";
 import ProfilePopup from "./ProfilePopup";
 
 export default function Navbar() {
-  const { user, logout } = useAuth();
+  const { user, logout, theme } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfilePopupOpen, setIsProfilePopupOpen] = useState(false);
 
-  const navItem = "px-4 py-3 rounded-lg text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 flex items-center gap-2";
-  const activeNavItem = "px-4 py-3 rounded-lg text-sm font-medium bg-blue-100 text-blue-700 flex items-center gap-2";
+  const navItem = "px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2";
+  const activeNavItem = "px-4 py-3 rounded-lg text-sm font-medium flex items-center gap-2";
 
-  const mobileNavItem = "block px-4 py-3 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 flex items-center gap-3";
-  const activeMobileNavItem = "block px-4 py-3 text-base font-medium bg-blue-100 text-blue-700 flex items-center gap-3";
+  const mobileNavItem = "block px-4 py-3 text-base font-medium transition-all duration-200 flex items-center gap-3";
+  const activeMobileNavItem = "block px-4 py-3 text-base font-medium flex items-center gap-3";
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -30,15 +30,23 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 border-b border-gray-200 bg-white/80 backdrop-blur-lg shadow-sm">
+      <header className={`sticky top-0 z-50 border-b backdrop-blur-lg shadow-sm ${
+        theme === 'dark' 
+          ? 'border-gray-700 bg-gray-900/80' 
+          : 'border-gray-200 bg-white/80'
+      }`}>
         <nav className="max-w-7xl mx-auto flex items-center justify-between h-16 px-4 sm:px-6">
           {/* Logo and Hamburger */}
           <div className="flex items-center">
             {/* Hamburger Menu Button - Mobile Only */}
             <button
               onClick={toggleMenu}
-              className="md:hidden mr-3 p-2 rounded-lg text-gray-600 hover:bg-gray-100 focus:outline-none transition-colors"
+              className="md:hidden mr-3 p-2 rounded-lg focus:outline-none transition-colors"
               aria-label="Toggle menu"
+              style={{
+                color: theme === 'dark' ? '#cccccc' : '#6b7280',
+                backgroundColor: theme === 'dark' ? 'transparent' : 'transparent'
+              }}
             >
               <svg
                 className="h-6 w-6"
@@ -81,7 +89,10 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-1">
             <NavLink 
               to="/dashboard" 
-              className={({ isActive }) => isActive ? activeNavItem : navItem}
+              className={({ isActive }) => isActive 
+                ? `${activeNavItem} ${theme === 'dark' ? 'bg-blue-900/30 text-blue-300' : 'bg-blue-100 text-blue-700'}` 
+                : `${navItem} ${theme === 'dark' ? 'text-gray-300 hover:text-blue-400 hover:bg-gray-800' : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'}`
+              }
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
@@ -90,7 +101,10 @@ export default function Navbar() {
             </NavLink>
             <NavLink 
               to="/chat" 
-              className={({ isActive }) => isActive ? activeNavItem : navItem}
+              className={({ isActive }) => isActive 
+                ? `${activeNavItem} ${theme === 'dark' ? 'bg-blue-900/30 text-blue-300' : 'bg-blue-100 text-blue-700'}` 
+                : `${navItem} ${theme === 'dark' ? 'text-gray-300 hover:text-blue-400 hover:bg-gray-800' : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'}`
+              }
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
@@ -99,7 +113,10 @@ export default function Navbar() {
             </NavLink>
             <NavLink 
               to="/profile" 
-              className={({ isActive }) => isActive ? activeNavItem : navItem}
+              className={({ isActive }) => isActive 
+                ? `${activeNavItem} ${theme === 'dark' ? 'bg-blue-900/30 text-blue-300' : 'bg-blue-100 text-blue-700'}` 
+                : `${navItem} ${theme === 'dark' ? 'text-gray-300 hover:text-blue-400 hover:bg-gray-800' : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'}`
+              }
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -127,7 +144,11 @@ export default function Navbar() {
                 </button>
                 <button
                   onClick={logout}
-                  className="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors flex items-center gap-2"
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
+                    theme === 'dark' 
+                      ? 'text-gray-300 hover:bg-gray-800' 
+                      : 'text-gray-600 hover:bg-gray-100'
+                  }`}
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -164,11 +185,18 @@ export default function Navbar() {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden bg-white border-t border-gray-200 shadow-lg">
+          <div className={`md:hidden border-t shadow-lg ${
+            theme === 'dark' 
+              ? 'bg-gray-900 border-gray-700' 
+              : 'bg-white border-gray-200'
+          }`}>
             <div className="px-2 pt-2 pb-3 space-y-1">
               <NavLink
                 to="/dashboard"
-                className={({ isActive }) => isActive ? activeMobileNavItem : mobileNavItem}
+                className={({ isActive }) => isActive 
+                  ? `${activeMobileNavItem} ${theme === 'dark' ? 'bg-blue-900/30 text-blue-300' : 'bg-blue-100 text-blue-700'}` 
+                  : `${mobileNavItem} ${theme === 'dark' ? 'text-gray-300 hover:text-blue-400 hover:bg-gray-800' : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'}`
+                }
                 onClick={() => setIsMenuOpen(false)}
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -178,7 +206,10 @@ export default function Navbar() {
               </NavLink>
               <NavLink
                 to="/chat"
-                className={({ isActive }) => isActive ? activeMobileNavItem : mobileNavItem}
+                className={({ isActive }) => isActive 
+                  ? `${activeMobileNavItem} ${theme === 'dark' ? 'bg-blue-900/30 text-blue-300' : 'bg-blue-100 text-blue-700'}` 
+                  : `${mobileNavItem} ${theme === 'dark' ? 'text-gray-300 hover:text-blue-400 hover:bg-gray-800' : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'}`
+                }
                 onClick={() => setIsMenuOpen(false)}
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -188,7 +219,10 @@ export default function Navbar() {
               </NavLink>
               <NavLink
                 to="/profile"
-                className={({ isActive }) => isActive ? activeMobileNavItem : mobileNavItem}
+                className={({ isActive }) => isActive 
+                  ? `${activeMobileNavItem} ${theme === 'dark' ? 'bg-blue-900/30 text-blue-300' : 'bg-blue-100 text-blue-700'}` 
+                  : `${mobileNavItem} ${theme === 'dark' ? 'text-gray-300 hover:text-blue-400 hover:bg-gray-800' : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'}`
+                }
                 onClick={() => setIsMenuOpen(false)}
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -197,17 +231,23 @@ export default function Navbar() {
                 Profile
               </NavLink>
             </div>
-            <div className="pt-4 pb-3 border-t border-gray-200">
+            <div className={`pt-4 pb-3 border-t ${
+              theme === 'dark' ? 'border-gray-700' : 'border-gray-200'
+            }`}>
               {user ? (
                 <div className="flex items-center px-5">
                   <div className="flex-shrink-0">
                     <Avatar name={user.name} src={user.avatarUrl} size={44} />
                   </div>
                   <div className="ml-3">
-                    <div className="text-base font-medium text-gray-800">
+                    <div className={`text-base font-medium ${
+                      theme === 'dark' ? 'text-gray-100' : 'text-gray-800'
+                    }`}>
                       {user.name}
                     </div>
-                    <div className="text-sm font-medium text-gray-500">
+                    <div className={`text-sm font-medium ${
+                      theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+                    }`}>
                       {user.email}
                     </div>
                   </div>
@@ -228,14 +268,20 @@ export default function Navbar() {
               )}
             </div>
             {user && (
-              <div className="pt-4 pb-3 border-t border-gray-200">
+              <div className={`pt-4 pb-3 border-t ${
+                theme === 'dark' ? 'border-gray-700' : 'border-gray-200'
+              }`}>
                 <div className="px-2 space-y-1">
                   <button
                     onClick={() => {
                       logout();
                       setIsMenuOpen(false);
                     }}
-                    className="block w-full text-left px-4 py-3 rounded-lg text-base font-medium text-gray-700 hover:bg-gray-100 transition-colors flex items-center gap-3"
+                    className={`block w-full text-left px-4 py-3 rounded-lg text-base font-medium transition-colors flex items-center gap-3 ${
+                      theme === 'dark' 
+                        ? 'text-gray-300 hover:bg-gray-800' 
+                        : 'text-gray-700 hover:bg-gray-100'
+                    }`}
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
