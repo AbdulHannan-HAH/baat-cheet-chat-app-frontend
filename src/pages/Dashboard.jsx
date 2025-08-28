@@ -143,12 +143,9 @@ export default function Dashboard() {
             <div className="manual-section">
               <h3>😊 Emojis</h3>
               <ul>
-                <li><b>English:</b> "Send happy emoji to Ali"</li>
-                <li><b>Urdu:</b> "Ali ko khushi wala emoji bhejo"</li>
-                <li><b>English:</b> "Send sad emoji to Ali"</li>
-                <li><b>Urdu:</b> "Ali ko udaasi wala emoji bhejo"</li>
-                <li><b>English:</b> "Send enjoy emoji to Ali"</li>
-                <li><b>Urdu:</b> "Ali ko maze ka emoji bhejo"</li>
+                <li> "Send happy emoji to Ali"</li>
+                <li> "Send sad emoji to Ali"</li>
+                <li> "Send enjoy emoji to Ali"</li>
               </ul>
             </div>
           </div>
