@@ -3,7 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import { profileApi } from "../lib/api";
 
 export default function ProfilePopup({ isOpen, onClose }) {
-  const { user } = useAuth();
+  const { user, theme } = useAuth();
   const [userDetails, setUserDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const popupRef = useRef(null);
@@ -56,19 +56,20 @@ export default function ProfilePopup({ isOpen, onClose }) {
       left: 0,
       right: 0,
       bottom: 0,
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      backgroundColor: theme === 'dark' ? 'rgba(0, 0, 0, 0.7)' : 'rgba(0, 0, 0, 0.5)',
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
       zIndex: 1000
     }}>
       <div ref={popupRef} style={{
-        backgroundColor: 'white',
+        backgroundColor: theme === 'dark' ? '#2d2d2d' : 'white',
         borderRadius: '12px',
         padding: '24px',
         width: '90%',
         maxWidth: '400px',
-        boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)'
+        boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)',
+        color: theme === 'dark' ? '#f5f5f5' : '#1f2937'
       }}>
         {/* Header */}
         <div style={{
@@ -76,13 +77,13 @@ export default function ProfilePopup({ isOpen, onClose }) {
           justifyContent: 'space-between',
           alignItems: 'center',
           marginBottom: '20px',
-          borderBottom: '1px solid #e5e7eb',
+          borderBottom: theme === 'dark' ? '1px solid #444' : '1px solid #e5e7eb',
           paddingBottom: '16px'
         }}>
           <h2 style={{
             fontSize: '20px',
             fontWeight: 'bold',
-            color: '#1f2937'
+            color: theme === 'dark' ? '#f5f5f5' : '#1f2937'
           }}>
             Profile Details
           </h2>
@@ -93,7 +94,7 @@ export default function ProfilePopup({ isOpen, onClose }) {
               border: 'none',
               fontSize: '20px',
               cursor: 'pointer',
-              color: '#6b7280'
+              color: theme === 'dark' ? '#cccccc' : '#6b7280'
             }}
           >
             ×
@@ -101,7 +102,7 @@ export default function ProfilePopup({ isOpen, onClose }) {
         </div>
 
         {loading ? (
-          <div style={{ textAlign: 'center', padding: '20px' }}>
+          <div style={{ textAlign: 'center', padding: '20px', color: theme === 'dark' ? '#f5f5f5' : '#1f2937' }}>
             <div>Loading...</div>
           </div>
         ) : (
@@ -116,7 +117,7 @@ export default function ProfilePopup({ isOpen, onClose }) {
                   height: '80px',
                   borderRadius: '50%',
                   objectFit: 'cover',
-                  border: '3px solid #e5e7eb'
+                  border: theme === 'dark' ? '3px solid #444' : '3px solid #e5e7eb'
                 }}
               />
             </div>
@@ -127,7 +128,7 @@ export default function ProfilePopup({ isOpen, onClose }) {
                 <label style={{
                   fontSize: '12px',
                   fontWeight: '500',
-                  color: '#6b7280',
+                  color: theme === 'dark' ? '#cccccc' : '#6b7280',
                   display: 'block',
                   marginBottom: '4px'
                 }}>
@@ -136,9 +137,10 @@ export default function ProfilePopup({ isOpen, onClose }) {
                 <div style={{
                   padding: '8px 12px',
                   borderRadius: '6px',
-                  backgroundColor: '#f9fafb',
-                  border: '1px solid #e5e7eb',
-                  fontSize: '14px'
+                  backgroundColor: theme === 'dark' ? '#3d3d3d' : '#f9fafb',
+                  border: theme === 'dark' ? '1px solid #444' : '1px solid #e5e7eb',
+                  fontSize: '14px',
+                  color: theme === 'dark' ? '#f5f5f5' : '#1f2937'
                 }}>
                   {userDetails?.name || 'Not set'}
                 </div>
@@ -148,7 +150,7 @@ export default function ProfilePopup({ isOpen, onClose }) {
                 <label style={{
                   fontSize: '12px',
                   fontWeight: '500',
-                  color: '#6b7280',
+                  color: theme === 'dark' ? '#cccccc' : '#6b7280',
                   display: 'block',
                   marginBottom: '4px'
                 }}>
@@ -157,9 +159,10 @@ export default function ProfilePopup({ isOpen, onClose }) {
                 <div style={{
                   padding: '8px 12px',
                   borderRadius: '6px',
-                  backgroundColor: '#f9fafb',
-                  border: '1px solid #e5e7eb',
-                  fontSize: '14px'
+                  backgroundColor: theme === 'dark' ? '#3d3d3d' : '#f9fafb',
+                  border: theme === 'dark' ? '1px solid #444' : '1px solid #e5e7eb',
+                  fontSize: '14px',
+                  color: theme === 'dark' ? '#f5f5f5' : '#1f2937'
                 }}>
                   {userDetails?.email || 'Not set'}
                 </div>
@@ -169,7 +172,7 @@ export default function ProfilePopup({ isOpen, onClose }) {
                 <label style={{
                   fontSize: '12px',
                   fontWeight: '500',
-                  color: '#6b7280',
+                  color: theme === 'dark' ? '#cccccc' : '#6b7280',
                   display: 'block',
                   marginBottom: '4px'
                 }}>
@@ -178,9 +181,10 @@ export default function ProfilePopup({ isOpen, onClose }) {
                 <div style={{
                   padding: '8px 12px',
                   borderRadius: '6px',
-                  backgroundColor: '#f9fafb',
-                  border: '1px solid #e5e7eb',
-                  fontSize: '14px'
+                  backgroundColor: theme === 'dark' ? '#3d3d3d' : '#f9fafb',
+                  border: theme === 'dark' ? '1px solid #444' : '1px solid #e5e7eb',
+                  fontSize: '14px',
+                  color: theme === 'dark' ? '#f5f5f5' : '#1f2937'
                 }}>
                   {userDetails?.phone || 'Not set'}
                 </div>
@@ -190,7 +194,7 @@ export default function ProfilePopup({ isOpen, onClose }) {
                 <label style={{
                   fontSize: '12px',
                   fontWeight: '500',
-                  color: '#6b7280',
+                  color: theme === 'dark' ? '#cccccc' : '#6b7280',
                   display: 'block',
                   marginBottom: '4px'
                 }}>
@@ -199,10 +203,11 @@ export default function ProfilePopup({ isOpen, onClose }) {
                 <div style={{
                   padding: '8px 12px',
                   borderRadius: '6px',
-                  backgroundColor: '#f9fafb',
-                  border: '1px solid #e5e7eb',
+                  backgroundColor: theme === 'dark' ? '#3d3d3d' : '#f9fafb',
+                  border: theme === 'dark' ? '1px solid #444' : '1px solid #e5e7eb',
                   fontSize: '14px',
-                  minHeight: '60px'
+                  minHeight: '60px',
+                  color: theme === 'dark' ? '#f5f5f5' : '#1f2937'
                 }}>
                   {userDetails?.bio || 'No bio yet'}
                 </div>
@@ -213,12 +218,12 @@ export default function ProfilePopup({ isOpen, onClose }) {
             <div style={{
               marginTop: '20px',
               paddingTop: '16px',
-              borderTop: '1px solid #e5e7eb',
+              borderTop: theme === 'dark' ? '1px solid #444' : '1px solid #e5e7eb',
               textAlign: 'center'
             }}>
               <p style={{
                 fontSize: '12px',
-                color: '#6b7280'
+                color: theme === 'dark' ? '#cccccc' : '#6b7280'
               }}>
                 Last updated: {userDetails?.updatedAt ? new Date(userDetails.updatedAt).toLocaleDateString() : 'N/A'}
               </p>
