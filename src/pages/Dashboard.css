@@ -161,10 +161,10 @@
   font-size: 0.9rem;
 }
 
-/* Go to Chats Button */
+/* Go to Chats Button - Moved higher */
 .action-buttons {
   position: fixed;
-  bottom: 100px;
+  bottom: 120px; /* Changed from 100px to 120px to move it higher */
   left: 0;
   right: 0;
   display: flex;
@@ -302,5 +302,10 @@
   .go-to-chats-btn {
     padding: 12px 25px;
     font-size: 1rem;
+  }
+
+  /* Adjust button position for mobile */
+  .action-buttons {
+    bottom: 110px; /* Slightly higher on mobile too */
   }
 }
