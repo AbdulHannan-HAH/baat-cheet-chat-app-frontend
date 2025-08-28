@@ -1164,3 +1164,50 @@
 .offline-status {
   color: var(--text-secondary, #6b7280);
 }
+
+
+
+
+
+/* Chat.css - Add these styles at the end of the file */
+
+/* Message time styling */
+.message-time {
+  font-size: 11px;
+  opacity: 0.7;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--message-time-color, #64748b);
+}
+
+[data-theme="dark"] .message-time {
+  --message-time-color: rgba(255, 255, 255, 0.7);
+}
+
+.message-status {
+  font-size: 11px;
+  color: var(--message-status-color, #64748b);
+}
+
+[data-theme="dark"] .message-status {
+  --message-status-color: rgba(255, 255, 255, 0.7);
+}
+
+/* Outgoing messages (your messages) */
+.message.outgoing .message-time,
+.message.outgoing .message-status {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Incoming messages (others' messages) */
+.message.incoming .message-time,
+.message.incoming .message-status {
+  color: var(--message-time-color, #64748b);
+}
+
+[data-theme="dark"] .message.incoming .message-time,
+[data-theme="dark"] .message.incoming .message-status {
+  --message-time-color: rgba(255, 255, 255, 0.7);
+}
