@@ -19,7 +19,13 @@ dayjs.extend(relativeTime);
 export default function Chat() {
   const nav = useNavigate();
   const { user: currentUser } = useAuth(); // Current user get karein
-  const [users, setUsers] = useState([]);
+
+
+
+const [users, setUsers] = useState(() => {
+  const savedOrder = localStorage.getItem('chatContactOrder');
+  return savedOrder ? JSON.parse(savedOrder) : [];
+});
   const [activeUser, setActiveUser] = useState(null);
   const [conversationId, setConversationId] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -203,7 +209,8 @@ useEffect(() => {
       setTypingFrom(prev => prev === from ? null : prev); 
     }
     
-    function onMessageNew({ message }) {
+   // Replace the onMessageNew function with this:
+function onMessageNew({ message }) {
   // Only handle incoming messages (from others)
   if (message.from !== currentUser._id) {
     if (activeUser && message.from === activeUser._id) {
@@ -213,15 +220,14 @@ useEffect(() => {
       // Immediately mark as seen when receiving a message in active chat
       socket.emit('message:seen', { messageId: message._id, to: message.from });
     } else {
-      // increment unread for that contact
-      setUsers(prev => prev.map(u => u._id === message.from ? { ...u, unread: (u.unread || 0) + 1 } : u));
-      
       // Update the conversation order - move this contact to the top
       setUsers(prev => {
         const userIndex = prev.findIndex(u => u._id === message.from);
-        if (userIndex > 0) {
+        if (userIndex >= 0) {
           const updatedUsers = [...prev];
           const [user] = updatedUsers.splice(userIndex, 1);
+          // Increment unread count for that contact
+          user.unread = (user.unread || 0) + 1;
           updatedUsers.unshift(user);
           return updatedUsers;
         }
@@ -230,7 +236,8 @@ useEffect(() => {
     }
   }
 }
-    function onMessageSent({ message }) {
+    // Replace the onMessageSent function with this:
+function onMessageSent({ message }) {
   // Only handle our own sent messages
   if (message.from === currentUser._id) {
     setMessages(prev => [...prev, message]); 
@@ -240,7 +247,7 @@ useEffect(() => {
     if (activeUser && message.to === activeUser._id) {
       setUsers(prev => {
         const userIndex = prev.findIndex(u => u._id === message.to);
-        if (userIndex > 0) {
+        if (userIndex >= 0) {
           const updatedUsers = [...prev];
           const [user] = updatedUsers.splice(userIndex, 1);
           updatedUsers.unshift(user);
@@ -251,6 +258,7 @@ useEffect(() => {
     }
   }
 }
+
     
     function onMessageSeen({ messageId }) { 
       setMessages(prev => prev.map(m => {
@@ -290,6 +298,12 @@ useEffect(() => {
 
     };
   }, [socket, activeUser, currentUser._id]);
+  // Add this useEffect to save order to localStorage
+useEffect(() => {
+  if (users.length > 0) {
+    localStorage.setItem('chatContactOrder', JSON.stringify(users));
+  }
+}, [users]);
 
   const scrollToBottomSoon = () => setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), 30);
 
