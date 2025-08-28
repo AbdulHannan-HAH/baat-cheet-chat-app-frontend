@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Avatar from "../components/Avatar";
-import "./Dashboard.css"; // We'll create this CSS file
+import "./Dashboard.css"; 
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -15,36 +15,12 @@ export default function Dashboard() {
 
   // App features data
   const features = [
-    {
-      icon: "🤖",
-      title: "Jarvis Voice Assistant",
-      description: "Control the app with voice commands in both English and Urdu"
-    },
-    {
-      icon: "🖼️",
-      title: "Image and Videos Sharing",
-      description: "Easily share your images and videos with friends"
-    },
-    {
-      icon: "😊",
-      title: "Emoji Reactions",
-      description: "Express yourself with a wide range of emojis"
-    },
-    {
-      icon: "🌐",
-      title: "Multi-Language Support",
-      description: "Switch between English and Urdu seamlessly"
-    },
-    {
-      icon: "📱",
-      title: "Responsive Design",
-      description: "Works perfectly on desktop, tablet, and mobile"
-    },
-    {
-      icon: "🔒",
-      title: "Secure Messaging",
-      description: "Your conversations are private and encrypted"
-    }
+    { icon: "🤖", title: "Jarvis Voice Assistant", description: "Control the app with voice commands in both English and Urdu" },
+    { icon: "🖼️", title: "Image and Videos Sharing", description: "Easily share your images and videos with friends" },
+    { icon: "😊", title: "Emoji Reactions", description: "Express yourself with a wide range of emojis" },
+    { icon: "🌐", title: "Multi-Language Support", description: "Switch between English and Urdu seamlessly" },
+    { icon: "📱", title: "Responsive Design", description: "Works perfectly on desktop, tablet, and mobile" },
+    { icon: "🔒", title: "Secure Messaging", description: "Your conversations are private and encrypted" }
   ];
 
   return (
@@ -75,6 +51,13 @@ export default function Dashboard() {
         >
           <i className="fas fa-code"></i>
           Developer
+        </button>
+        <button 
+          className={`tab ${activeTab === "manual" ? "active" : ""}`}
+          onClick={() => setActiveTab("manual")}
+        >
+          <i className="fas fa-book"></i>
+          User Manual
         </button>
       </div>
 
@@ -121,6 +104,52 @@ export default function Dashboard() {
                 <span className="skill-tag">Speech Recognition</span>
                 <span className="skill-tag">CSS3</span>
               </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === "manual" && (
+          <div className="manual-card">
+            <h2>📖 How to use Jarvis</h2>
+            <p>
+              Jarvis is your AI voice assistant. You can give commands in both <b>English</b> and <b>Urdu</b>.
+              Here are some examples:
+            </p>
+
+            <div className="manual-section">
+              <h3>🔍 Open Chats</h3>
+              <ul>
+                <li><b>English:</b> "Open Babar Azam chat"</li>
+                <li><b>Urdu:</b> "Babar Azam ki chat kholo"</li>
+              </ul>
+            </div>
+
+            <div className="manual-section">
+              <h3>💬 Send Messages</h3>
+              <ul>
+                <li><b>English:</b> "Send message to Ali"</li>
+                <li><b>Urdu:</b> "Ali ko message bhejo"</li>
+              </ul>
+            </div>
+
+            <div className="manual-section">
+              <h3>📅 Date & Time</h3>
+              <ul>
+                <li><b>English:</b> "What is today’s date?" / "What time is it now?"</li>
+                <li><b>Urdu:</b> "Aaj ki tareekh kya hai?" / "Abhi kitna time hua hai?"</li>
+              </ul>
+            </div>
+
+            <div className="manual-section">
+              <h3>😊 Emojis</h3>
+              <ul>
+                <li><b>English:</b> "Send happy emoji to Ali"</li>
+                <li><b>Urdu:</b> "Ali ko khushi wala emoji bhejo"</li>
+                <li><b>English:</b> "Send sad emoji to Ali"</li>
+                <li><b>Urdu:</b> "Ali ko udaasi wala emoji bhejo"</li>
+                <li><b>English:</b> "Send enjoy emoji to Ali"</li>
+                <li><b>Urdu:</b> "Ali ko maze ka emoji bhejo"</li>
+              </ul>
             </div>
           </div>
         )}
