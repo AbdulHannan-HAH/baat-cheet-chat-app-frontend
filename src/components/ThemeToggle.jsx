@@ -1,16 +1,21 @@
 import { useAuth } from '../context/AuthContext';
+import { useEffect } from 'react';
 
 export default function ThemeToggle() {
   const { theme, toggleTheme } = useAuth();
 
-  // Body ka background aur text color change karo
-  if (theme === "light") {
-    document.body.style.backgroundColor = "#ffffff";
-    document.body.style.color = "#000000";
-  } else {
-    document.body.style.backgroundColor = "#1a1a1a";
-    document.body.style.color = "#f5f5f5";
-  }
+  // Apply theme to entire document
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    
+    if (theme === "light") {
+      document.body.style.backgroundColor = "#ffffff";
+      document.body.style.color = "#000000";
+    } else {
+      document.body.style.backgroundColor = "#1a1a1a";
+      document.body.style.color = "#f5f5f5";
+    }
+  }, [theme]);
 
   return (
     <button 
