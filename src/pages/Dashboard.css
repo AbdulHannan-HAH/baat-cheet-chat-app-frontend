@@ -306,6 +306,6 @@
 
   /* Adjust button position for mobile */
   .action-buttons {
-    top: 110px; /* Slightly higher on mobile too */
+    bottom: 110px; /* Slightly higher on mobile too */
   }
 }
