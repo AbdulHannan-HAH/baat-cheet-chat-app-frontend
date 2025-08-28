@@ -5,16 +5,6 @@
   min-height: 100vh;
   position: relative;
   padding-bottom: 80px;
-  background-color: var(--bg-color, #ffffff);
-  color: var(--text-color, #333333);
-}
-
-[data-theme="dark"] .dashboard-container {
-  --bg-color: #1a1a1a;
-  --text-color: #f5f5f5;
-  --card-bg: #2d2d2d;
-  --border-color: #404040;
-  --hover-bg: #3d3d3d;
 }
 
 .dashboard-header {
@@ -27,18 +17,18 @@
 .welcome-section h1 {
   font-size: 2rem;
   margin: 0;
-  color: var(--text-color, #333);
+  color: #333;
 }
 
 .welcome-section p {
   margin: 5px 0 0;
-  color: var(--text-secondary, #666);
+  color: #666;
 }
 
 /* Tabs */
 .tabs-container {
   display: flex;
-  background: var(--card-bg, white);
+  background: white;
   border-radius: 15px;
   padding: 5px;
   margin-bottom: 30px;
@@ -57,7 +47,7 @@
   justify-content: center;
   gap: 8px;
   font-weight: 500;
-  color: var(--text-secondary, #666);
+  color: #666;
   transition: all 0.3s ease;
 }
 
@@ -79,13 +69,12 @@
 }
 
 .feature-card {
-  background: var(--card-bg, white);
+  background: white;
   border-radius: 15px;
   padding: 25px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   text-align: center;
   transition: transform 0.3s ease;
-  color: var(--text-color, #333);
 }
 
 .feature-card:hover {
@@ -99,22 +88,21 @@
 
 .feature-card h3 {
   margin: 0 0 10px;
-  color: var(--text-color, #333);
+  color: #333;
 }
 
 .feature-card p {
   margin: 0;
-  color: var(--text-secondary, #666);
+  color: #666;
   line-height: 1.5;
 }
 
 /* Developer Section */
 .developer-card {
-  background: var(--card-bg, white);
+  background: white;
   border-radius: 15px;
   padding: 30px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  color: var(--text-color, #333);
 }
 
 .developer-header {
@@ -133,12 +121,12 @@
 
 .developer-info h2 {
   margin: 0 0 5px;
-  color: var(--text-color, #333);
+  color: #333;
 }
 
 .developer-info p {
   margin: 0;
-  color: var(--text-secondary, #666);
+  color: #666;
 }
 
 .developer-bio {
@@ -146,57 +134,96 @@
 }
 
 .developer-bio p {
-  color: var(--text-secondary, #666);
+  color: #666;
   line-height: 1.6;
 }
 
 .developer-skills h3 {
   margin: 0 0 15px;
-  color: var(--text-color, #333);
+  color: #333;
 }
 
-.skills-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 15px;
+.skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
-.skill-item {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+.skill-tag {
+  background: rgba(79, 70, 229, 0.1);
+  color: #4f46e5;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+}
+
+/* Go to Chats Button */
+.action-buttons {
+  position: fixed;
+  bottom: 100px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  z-index: 10;
+}
+
+.go-to-chats-btn {
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
   color: white;
-  padding: 10px 15px;
-  border-radius: 10px;
-  text-align: center;
-  font-weight: 500;
+  border: none;
+  border-radius: 50px;
+  padding: 15px 30px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(79, 70, 229, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+}
+
+.go-to-chats-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(79, 70, 229, 0.4);
 }
 
 /* Footer */
 .dashboard-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
   text-align: center;
-  margin-top: 50px;
   padding: 20px;
-  color: var(--text-secondary, #666);
+  background: white;
+  border-top: 1px solid #eee;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .dashboard-container {
-    padding: 15px;
-  }
+.dashboard-footer p {
+  margin: 0;
+  color: #666;
+}
 
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
   .dashboard-header {
     flex-direction: column;
     text-align: center;
     gap: 15px;
-  }
-
-  .welcome-section h1 {
-    font-size: 1.5rem;
-  }
-
-  .tabs-container {
-    flex-direction: column;
-    gap: 5px;
   }
 
   .features-grid {
@@ -213,67 +240,8 @@
     margin-bottom: 15px;
   }
 
-  .skills-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-/* Theme Toggle */
-.theme-toggle {
-  background: var(--card-bg, #f8fafc);
-  border: 2px solid var(--border-color, #e2e8f0);
-  border-radius: 25px;
-  padding: 10px 20px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  transition: all 0.3s ease;
-  color: var(--text-color, #333);
-}
-
-.theme-toggle:hover {
-  border-color: #4f46e5;
-}
-
-/* Mobile Navigation */
-.mobile-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: var(--card-bg, white);
-  border-top: 1px solid var(--border-color, #e2e8f0);
-  padding: 15px;
-  display: none;
-  justify-content: space-around;
-  z-index: 1000;
-}
-
-.mobile-nav-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-decoration: none;
-  color: var(--text-secondary, #666);
-  font-size: 0.8rem;
-}
-
-.mobile-nav-item.active {
-  color: #4f46e5;
-}
-
-.mobile-nav-icon {
-  font-size: 1.5rem;
-  margin-bottom: 5px;
-}
-
-@media (max-width: 768px) {
-  .mobile-nav {
-    display: flex;
-  }
-  
-  .dashboard-container {
-    padding-bottom: 100px;
+  .go-to-chats-btn {
+    padding: 12px 25px;
+    font-size: 1rem;
   }
 }
