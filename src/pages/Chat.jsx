@@ -111,20 +111,30 @@ useEffect(() => {
 useEffect(() => {
   function onAllUsers({ users }) {
     setUsers(prev => {
-      // Create a map of existing users with their unread counts
-      const unreadMap = {};
-      prev.forEach(u => {
-        unreadMap[u._id] = u.unread || 0;
+      // Create a map of existing users with their order position
+      const orderMap = {};
+      prev.forEach((u, index) => {
+        orderMap[u._id] = index; // Store the position of each user
       });
       
-      // Merge with the new users data, preserving unread counts
-      return users.map(userData => {
+      // Merge with the new users data, preserving order where possible
+      const mergedUsers = users.map(userData => {
         const existingUser = prev.find(u => u._id === userData.userId);
         return {
           ...userData.user,
-          unread: existingUser ? existingUser.unread : 0
+          unread: existingUser ? existingUser.unread : 0,
+          // Preserve other existing properties if needed
         };
       });
+      
+      // Sort mergedUsers based on the previous order
+      mergedUsers.sort((a, b) => {
+        const aOrder = orderMap[a._id] !== undefined ? orderMap[a._id] : Infinity;
+        const bOrder = orderMap[b._id] !== undefined ? orderMap[b._id] : Infinity;
+        return aOrder - bOrder;
+      });
+      
+      return mergedUsers;
     });
   }
 
@@ -231,12 +241,18 @@ function onMessageNew({ message }) {
           updatedUsers.unshift(user);
           return updatedUsers;
         }
-        return prev;
+        // If user not found in current list, add them at the top
+        const newUser = {
+          _id: message.from,
+          name: message.senderName || 'Unknown',
+          unread: 1,
+          // Add other necessary properties
+        };
+        return [newUser, ...prev];
       });
     }
   }
-}
-    // Replace the onMessageSent function with this:
+}    // Replace the onMessageSent function with this:
 function onMessageSent({ message }) {
   // Only handle our own sent messages
   if (message.from === currentUser._id) {
@@ -325,6 +341,8 @@ useEffect(() => {
   setReplyingTo(null);
   setReplyText('');
 };
+// Add this function to clear the stored order when needed
+
 
 const handleShowProfile = (user) => {
   console.log('User object:', user); // 👈 Yeh line add karein
