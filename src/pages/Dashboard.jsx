@@ -220,7 +220,7 @@ export default function Dashboard() {
             <div className="reviews-grid">
               {reviews.map((rev, idx) => (
                 <div key={idx} className="review-card">
-                  <img src={rev.avatar} alt={rev.name} className="review-avatar" />
+                 {/* <img src={rev.avatar} alt={rev.name} className="review-avatar" />*/}
                   <div className="review-content">
                     <h4>{rev.name}</h4>
                     <p>{rev.feedback}</p>
