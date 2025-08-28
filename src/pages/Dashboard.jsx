@@ -57,8 +57,7 @@ export default function Dashboard() {
           onClick={() => setActiveTab("manual")}
         >
           <i className="fas fa-book"></i>
-          User Manual
-        </button>
+Jarvis Features        </button>
       </div>
 
       {/* Content Area */}
@@ -112,9 +111,17 @@ export default function Dashboard() {
           <div className="manual-card">
             <h2>📖 How to use Jarvis</h2>
             <p>
-              Jarvis is your AI voice assistant. You can give commands in both <b>English</b> and <b>Urdu</b>.
+              Jarvis is your AI voice assistant for this application. You can give commands in both <b>English</b> and <b>Urdu</b>.
               Here are some examples:
             </p>
+
+            <div className="manual-section">
+              <h3>Jarvis Introduction </h3>
+              <ul>
+                <li><b>English:</b> "Who are you? , What is your purpose?"</li>
+                <li><b>Urdu:</b> "Tumhara kia maqsad ha"</li>
+              </ul>
+            </div>
 
             <div className="manual-section">
               <h3>🔍 Open Chats</h3>

@@ -660,12 +660,17 @@ const tryHandleCommand = (raw) => {
     setListening(false);
     recognitionRef.current?.stop();
     setAssistantHint('Jarvis stopped');
-    speak('Goodbye. Take care.');
+    speak('Take care. Good Bye');
     return;
   }
 
   if (t.match(/^(who are you|what is your purpose|introduce yourself|tum kaun ho|tumhara kaam kya hai)$/i)) {
-    speak('I am your personal assistant for this chat application, developed by Hafiz Abdul Hannan.');
+    speak('I am Jarvis. I am your personal assistant for this chat application, developed by Hafiz Abdul Hannan.');
+    setAssistantHint('Introduced myself');
+    return;
+  }
+  if (t.match(/^(what is the nickname of developer?| Hafiz abdul hannan ka nickname kia ha?| )$/i)) {
+    speak('Nixkname of Hafiz Abdul Hannan is hah');
     setAssistantHint('Introduced myself');
     return;
   }
