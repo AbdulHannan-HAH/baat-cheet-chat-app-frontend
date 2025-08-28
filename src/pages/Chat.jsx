@@ -810,7 +810,7 @@ const sendByAssistant = (user, text) => {
                         </span>
                       )}
                     </div>
-                    <div className="user-email">{u.email}</div>
+                    {/*<div className="user-email">{u.email}</div>*/}
                   </div>
                   {u.unread > 0 && <span className="unread-badge">{u.unread}</span>}
                 </button>
