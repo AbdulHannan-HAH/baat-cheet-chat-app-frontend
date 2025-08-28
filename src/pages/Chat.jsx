@@ -1057,7 +1057,7 @@ const sendByAssistant = (user, text) => {
         </div>
         <div className="profile-details">
           <h4>{showProfileDetails.name || 'User'}</h4>
-          <p className="profile-email">{showProfileDetails.email}</p>
+          {/*<p className="profile-email">{showProfileDetails.email}</p>*/}
           {showProfileDetails.bio && (
             <p className="profile-bio">{showProfileDetails.bio}</p>
           )}
