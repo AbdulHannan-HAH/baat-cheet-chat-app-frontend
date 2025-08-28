@@ -13,7 +13,7 @@ export default function Dashboard() {
     if (user && !user.avatarUrl) nav("/avatar-picker");
   }, [user]);
 
-  // App features data
+  // Features data
   const features = [
     { icon: "🤖", title: "Jarvis Voice Assistant", description: "Control the app with voice commands in both English and Urdu" },
     { icon: "🖼️", title: "Image and Videos Sharing", description: "Easily share your images and videos with friends" },
@@ -23,9 +23,48 @@ export default function Dashboard() {
     { icon: "🔒", title: "Secure Messaging", description: "Your conversations are private and encrypted" }
   ];
 
+  // Initial Reviews
+  const [reviews, setReviews] = useState([
+    {
+      name: "Ali Raza",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=ali",
+      feedback: "Jarvis voice assistant is amazing! Urdu commands bhi perfectly samajhta hai 👏",
+      rating: 5
+    },
+    {
+      name: "Sara Khan",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=sara",
+      feedback: "Simple aur responsive design, mujhe mobile par bohot easy lagta hai.",
+      rating: 4
+    }
+  ]);
+
+  // Form states
+  const [reviewName, setReviewName] = useState("");
+  const [reviewFeedback, setReviewFeedback] = useState("");
+  const [reviewRating, setReviewRating] = useState(5);
+
+  // Add Review Handler
+  const handleAddReview = (e) => {
+    e.preventDefault();
+    if (!reviewName || !reviewFeedback) return;
+
+    const newReview = {
+      name: reviewName,
+      avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${reviewName}`,
+      feedback: reviewFeedback,
+      rating: reviewRating
+    };
+
+    setReviews([newReview, ...reviews]);
+    setReviewName("");
+    setReviewFeedback("");
+    setReviewRating(5);
+  };
+
   return (
     <div className="dashboard-container">
-      {/* Header Section */}
+      {/* Header */}
       <div className="dashboard-header">
         <div className="welcome-section">
           <h1>Hello, {user?.name} 👋</h1>
@@ -36,33 +75,25 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Tabs Navigation */}
+      {/* Tabs */}
       <div className="tabs-container">
-        <button 
-          className={`tab ${activeTab === "features" ? "active" : ""}`}
-          onClick={() => setActiveTab("features")}
-        >
-          <i className="fas fa-star"></i>
-          App Features
+        <button className={`tab ${activeTab === "features" ? "active" : ""}`} onClick={() => setActiveTab("features")}>
+          <i className="fas fa-star"></i> App Features
         </button>
-        <button 
-          className={`tab ${activeTab === "developer" ? "active" : ""}`}
-          onClick={() => setActiveTab("developer")}
-        >
-          <i className="fas fa-code"></i>
-          Developer
+        <button className={`tab ${activeTab === "developer" ? "active" : ""}`} onClick={() => setActiveTab("developer")}>
+          <i className="fas fa-code"></i> Developer
         </button>
-        <button 
-          className={`tab ${activeTab === "manual" ? "active" : ""}`}
-          onClick={() => setActiveTab("manual")}
-        >
-          <i className="fas fa-book"></i>
-          User Manual
+        <button className={`tab ${activeTab === "manual" ? "active" : ""}`} onClick={() => setActiveTab("manual")}>
+          <i className="fas fa-book"></i> User Manual
+        </button>
+        <button className={`tab ${activeTab === "reviews" ? "active" : ""}`} onClick={() => setActiveTab("reviews")}>
+          <i className="fas fa-comments"></i> Reviews
         </button>
       </div>
 
-      {/* Content Area */}
+      {/* Content */}
       <div className="content-area">
+        {/* Features */}
         {activeTab === "features" && (
           <div className="features-grid">
             {features.map((feature, index) => (
@@ -75,6 +106,7 @@ export default function Dashboard() {
           </div>
         )}
 
+        {/* Developer */}
         {activeTab === "developer" && (
           <div className="developer-card">
             <div className="developer-header">
@@ -108,13 +140,11 @@ export default function Dashboard() {
           </div>
         )}
 
+        {/* User Manual */}
         {activeTab === "manual" && (
           <div className="manual-card">
             <h2>📖 How to use Jarvis</h2>
-            <p>
-              Jarvis is your AI voice assistant. You can give commands in both <b>English</b> and <b>Urdu</b>.
-              Here are some examples:
-            </p>
+            <p>Jarvis is your AI voice assistant. You can give commands in both <b>English</b> and <b>Urdu</b>.</p>
 
             <div className="manual-section">
               <h3>🔍 Open Chats</h3>
@@ -153,16 +183,62 @@ export default function Dashboard() {
             </div>
           </div>
         )}
+
+        {/* Reviews */}
+        {activeTab === "reviews" && (
+          <div>
+            {/* Add Review Form */}
+            <form className="review-form" onSubmit={handleAddReview}>
+              <h3>Add Your Review</h3>
+              <input
+                type="text"
+                placeholder="Your Name"
+                value={reviewName}
+                onChange={(e) => setReviewName(e.target.value)}
+                required
+              />
+              <textarea
+                placeholder="Your Feedback"
+                value={reviewFeedback}
+                onChange={(e) => setReviewFeedback(e.target.value)}
+                required
+              ></textarea>
+              <label>
+                Rating: 
+                <select value={reviewRating} onChange={(e) => setReviewRating(Number(e.target.value))}>
+                  <option value={5}>⭐️⭐️⭐️⭐️⭐️</option>
+                  <option value={4}>⭐️⭐️⭐️⭐️</option>
+                  <option value={3}>⭐️⭐️⭐️</option>
+                  <option value={2}>⭐️⭐️</option>
+                  <option value={1}>⭐️</option>
+                </select>
+              </label>
+              <button type="submit">Submit Review</button>
+            </form>
+
+            {/* Reviews List */}
+            <div className="reviews-grid">
+              {reviews.map((rev, idx) => (
+                <div key={idx} className="review-card">
+                  <img src={rev.avatar} alt={rev.name} className="review-avatar" />
+                  <div className="review-content">
+                    <h4>{rev.name}</h4>
+                    <p>{rev.feedback}</p>
+                    <div className="review-rating">
+                      {"⭐".repeat(rev.rating)}{"☆".repeat(5 - rev.rating)}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Go to Chats Button */}
+      {/* Go to Chats */}
       <div className="action-buttons">
-        <button 
-          className="go-to-chats-btn"
-          onClick={() => nav("/chat")}
-        >
-          <i className="fas fa-comments"></i>
-          Go to Chats
+        <button className="go-to-chats-btn" onClick={() => nav("/chat")}>
+          <i className="fas fa-comments"></i> Go to Chats
         </button>
       </div>
 
