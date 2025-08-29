@@ -35,7 +35,7 @@ function LoadingSpinner() {
           animation: 'spin 1s linear infinite',
           margin: '0 auto 20px'
         }}></div>
-        <h2>BaatCheet</h2>
+        <h2>Welcome to BaatCheet</h2>
         <p>Loading your conversations...</p>
       </div>
       

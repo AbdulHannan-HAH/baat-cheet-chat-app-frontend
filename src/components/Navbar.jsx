@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { Link, NavLink } from "react-router-dom";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Avatar from "./Avatar";
 import ThemeToggle from "./ThemeToggle";
 import { useAuth } from "../context/AuthContext";
@@ -28,8 +30,34 @@ export default function Navbar() {
     setIsProfilePopupOpen(false);
   };
 
+  const handleLogout = async () => {
+    try {
+      await logout();
+      toast.success('Successfully logged out!', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: theme === 'dark' ? 'dark' : 'light',
+      });
+    } catch (error) {
+      toast.error('Failed to logout. Please try again.', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: theme === 'dark' ? 'dark' : 'light',
+      });
+    }
+  };
+
   return (
     <>
+      <ToastContainer />
       <header className={`sticky top-0 z-50 border-b backdrop-blur-lg shadow-sm ${
         theme === 'dark' 
           ? 'border-gray-700 bg-gray-900/80' 
@@ -143,7 +171,7 @@ export default function Navbar() {
                   </div>
                 </button>
                 <button
-                  onClick={logout}
+                  onClick={handleLogout}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
                     theme === 'dark' 
                       ? 'text-gray-300 hover:bg-gray-800' 
@@ -274,7 +302,7 @@ export default function Navbar() {
                 <div className="px-2 space-y-1">
                   <button
                     onClick={() => {
-                      logout();
+                      handleLogout();
                       setIsMenuOpen(false);
                     }}
                     className={`block w-full text-left px-4 py-3 rounded-lg text-base font-medium transition-colors flex items-center gap-3 ${
