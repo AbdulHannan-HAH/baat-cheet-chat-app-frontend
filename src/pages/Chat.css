@@ -57,6 +57,9 @@
   padding: 16px;
   border-bottom: 1px solid var(--sidebar-border, #e2e8f0);
   background-color: var(--bg-color, #f8fafc);
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 @media (max-width: 768px) {
@@ -66,7 +69,7 @@
 }
 
 .search-input {
-  width: 100%;
+  flex: 1;
   padding: 12px 16px;
   border: 2px solid var(--input-border, #e2e8f0);
   border-radius: 12px;
@@ -89,6 +92,31 @@
     padding: 10px 14px;
     font-size: 16px;
   }
+}
+
+/* Mobile Jarvis Button */
+.mobile-jarvis-button {
+  padding: 8px 12px;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  background: linear-gradient(135deg, #00d2d3, #54a0ff);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.mobile-jarvis-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.mobile-jarvis-button.listening {
+  background: linear-gradient(135deg, #ff4757, #ff3838);
 }
 
 /* User List */
@@ -924,7 +952,7 @@
 /* Text Input Container - Adjusted for mobile */
 .text-input-container {
   flex: 1;
-  min-width: 0; /* Important for flexbox shrinking */
+  min-width: 0;
   position: relative;
   display: flex;
   align-items: center;
@@ -949,7 +977,7 @@
   min-height: 44px;
   line-height: 1.4;
   width:70%;
-  min-width: 0; /* Allows textarea to shrink properly */
+  min-width: 0;
   color: var(--text-color, #1e293b);
 }
 
@@ -1164,12 +1192,6 @@
 .offline-status {
   color: var(--text-secondary, #6b7280);
 }
-
-
-
-
-
-/* Chat.css - Add these styles at the end of the file */
 
 /* Message time styling */
 .message-time {
