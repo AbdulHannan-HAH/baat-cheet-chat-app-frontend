@@ -62,9 +62,11 @@
   gap: 8px;
 }
 
+
 @media (max-width: 768px) {
   .search-box {
     padding: 12px;
+    gap: 6px;
   }
 }
 
@@ -81,7 +83,6 @@
   outline: none;
   color: var(--text-color, #1e293b);
 }
-
 .search-input:focus {
   border-color: #3b82f6;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
@@ -89,8 +90,10 @@
 
 @media (max-width: 768px) {
   .search-input {
-    padding: 10px 14px;
-    font-size: 16px;
+    padding: 10px 12px;
+    font-size: 14px;
+    min-width: 0; /* Allow the input to shrink */
+    flex-shrink: 1; /* Allow the input to shrink */
   }
 }
 
@@ -107,8 +110,9 @@
   box-shadow: 0 2px 8px rgba(0,0,0,0.15);
   background: linear-gradient(135deg, #00d2d3, #54a0ff);
   white-space: nowrap;
-  flex-shrink: 0;
+  flex-shrink: 0; /* Prevent button from shrinking */
 }
+
 
 .mobile-jarvis-button:hover {
   transform: translateY(-1px);
@@ -155,6 +159,28 @@
   .user-button {
     padding: 12px;
   }
+}
+@media (max-width: 768px) {
+  .mobile-jarvis-button {
+    padding: 8px 10px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .mobile-jarvis-button {
+    padding: 8px;
+    font-size: 10px;
+  }
+  
+  .search-input {
+    font-size: 13px;
+    padding: 8px 10px;
+  }
+}
+
+.mobile-jarvis-button.listening {
+  background: linear-gradient(135deg, #ff4757, #ff3838);
 }
 
 /* Avatar */
