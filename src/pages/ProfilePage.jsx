@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../context/AuthContext";
 import { profileApi } from "../lib/api";
 import EmojiPicker from "emoji-picker-react";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import "./Dashboard.css";
 
 export default function ProfilePage() {
@@ -9,8 +11,6 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const fileInputRef = useRef(null);
   const bioRef = useRef(null);
@@ -40,7 +40,7 @@ export default function ProfilePage() {
         }
       } catch (err) {
         console.error("Failed to load profile:", err);
-        setError("Failed to load profile data");
+        toast.error("Failed to load profile data");
       } finally {
         setLoading(false);
       }
@@ -100,8 +100,6 @@ export default function ProfilePage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
-    setError("");
-    setMessage("");
 
     try {
       console.log("Saving profile data:", formData);
@@ -110,16 +108,13 @@ export default function ProfilePage() {
       
       if (data.success) {
         setUser(data.user);
-        setMessage("Profile updated successfully!");
-        
-        // Clear message after 3 seconds
-        setTimeout(() => setMessage(""), 3000);
+        toast.success("Profile updated successfully!");
       } else {
-        setError(data.message || "Failed to update profile");
+        toast.error(data.message || "Failed to update profile");
       }
     } catch (err) {
       console.error("Profile update error:", err);
-      setError(err.response?.data?.message || "Failed to update profile");
+      toast.error(err.response?.data?.message || "Failed to update profile");
     } finally {
       setSaving(false);
     }
@@ -134,8 +129,6 @@ export default function ProfilePage() {
 
   const handleAvatarUpload = async (file) => {
     setUploading(true);
-    setError("");
-    setMessage("");
 
     try {
       const formData = new FormData();
@@ -145,16 +138,13 @@ export default function ProfilePage() {
       
       if (data.success) {
         setUser(data.user);
-        setMessage("Avatar uploaded successfully!");
-        
-        // Clear message after 3 seconds
-        setTimeout(() => setMessage(""), 3000);
+        toast.success("Avatar uploaded successfully!");
       } else {
-        setError(data.message || "Failed to upload avatar");
+        toast.error(data.message || "Failed to upload avatar");
       }
     } catch (err) {
       console.error("Avatar upload error:", err);
-      setError(err.response?.data?.message || "Failed to upload avatar");
+      toast.error(err.response?.data?.message || "Failed to upload avatar");
     } finally {
       setUploading(false);
     }
@@ -174,6 +164,20 @@ export default function ProfilePage() {
 
   return (
     <div className="dashboard-container" data-theme={theme} style={{ maxWidth: "800px", margin: "0 auto", padding: "40px 20px" }}>
+      {/* Toast Container for notifications */}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme={theme === 'dark' ? 'dark' : 'light'}
+      />
+      
       <div style={{ 
         backgroundColor: "var(--card-bg, white)", 
         borderRadius: "16px", 
@@ -187,32 +191,6 @@ export default function ProfilePage() {
         <p style={{ color: "var(--muted-text-color, #6b7280)", marginBottom: "32px" }}>
           Manage your account information
         </p>
-
-        {message && (
-          <div style={{ 
-            color: "green", 
-            backgroundColor: theme === 'dark' ? '#1a3a1f' : '#f0fdf4',
-            padding: "12px 16px",
-            borderRadius: "8px",
-            marginBottom: "24px",
-            border: "1px solid #bbf7d0"
-          }}>
-            ✅ {message}
-          </div>
-        )}
-
-        {error && (
-          <div style={{ 
-            color: "red", 
-            backgroundColor: theme === 'dark' ? '#3a1a1a' : '#fef2f2',
-            padding: "12px 16px",
-            borderRadius: "8px",
-            marginBottom: "24px",
-            border: "1px solid #fecaca"
-          }}>
-            ❌ {error}
-          </div>
-        )}
 
         {/* Avatar Section - Now on top for mobile */}
         <div style={{ 
