@@ -154,6 +154,102 @@ export default function Chat() {
     })();
   }, [activeUser?._id, isMobileView, currentUser._id, socket]);
 
+
+
+
+// In Chat.jsx, add this useEffect to handle offline messages
+useEffect(() => {
+  // Load unread counts from localStorage on component mount
+  const loadUnreadCounts = async () => {
+    try {
+      if (!currentUser) return;
+      
+      // Check if we have any offline messages to process
+      const offlineMessages = localStorage.getItem(`offline_messages_${currentUser._id}`);
+      if (offlineMessages) {
+        const messages = JSON.parse(offlineMessages);
+        
+        // Update unread counts for each sender
+        setUsers(prev => {
+          const updatedUsers = [...prev];
+          messages.forEach(msg => {
+            const userIndex = updatedUsers.findIndex(u => u._id === msg.from);
+            if (userIndex >= 0) {
+              updatedUsers[userIndex].unread = (updatedUsers[userIndex].unread || 0) + 1;
+            } else {
+              // Create a new user entry if not found
+              updatedUsers.unshift({
+                _id: msg.from,
+                name: msg.senderName || 'Unknown',
+                unread: 1,
+                // You might want to store more user details if available
+              });
+            }
+          });
+          return updatedUsers;
+        });
+        
+        // Clear processed offline messages
+        localStorage.removeItem(`offline_messages_${currentUser._id}`);
+      }
+    } catch (error) {
+      console.error('Error loading offline messages:', error);
+    }
+  };
+
+  loadUnreadCounts();
+}, [currentUser]);
+
+
+
+// Add online/offline event listeners
+useEffect(() => {
+  const handleOnline = () => {
+    // When coming back online, process any stored offline messages
+    const offlineMessages = localStorage.getItem(`offline_messages_${currentUser._id}`);
+    if (offlineMessages) {
+      const messages = JSON.parse(offlineMessages);
+      
+      setUsers(prev => {
+        const updatedUsers = [...prev];
+        messages.forEach(msg => {
+          const userIndex = updatedUsers.findIndex(u => u._id === msg.from);
+          if (userIndex >= 0) {
+            updatedUsers[userIndex].unread = (updatedUsers[userIndex].unread || 0) + 1;
+          } else {
+            updatedUsers.unshift({
+              _id: msg.from,
+              name: msg.senderName || 'Unknown',
+              unread: 1,
+            });
+          }
+        });
+        return updatedUsers;
+      });
+      
+      // Clear processed offline messages
+      localStorage.removeItem(`offline_messages_${currentUser._id}`);
+    }
+  };
+
+  const handleOffline = () => {
+    // Just update UI state if needed
+    console.log('Went offline');
+  };
+
+  window.addEventListener('online', handleOnline);
+  window.addEventListener('offline', handleOffline);
+
+  return () => {
+    window.removeEventListener('online', handleOnline);
+    window.removeEventListener('offline', handleOffline);
+  };
+}, [currentUser]);
+
+
+
+
+
   // Socket listeners
   useEffect(() => {
     function onOnline({ userId, user }) { 
@@ -197,32 +293,42 @@ export default function Chat() {
     }
     
     function onMessageNew({ message }) {
-      if (message.from !== currentUser._id) {
-        if (activeUser && message.from === activeUser._id) {
-          setMessages(prev => [...prev, message]);
-          scrollToBottomSoon();
-          
-          socket.emit('message:seen', { messageId: message._id, to: message.from });
-        } else {
-          setUsers(prev => {
-            const userIndex = prev.findIndex(u => u._id === message.from);
-            if (userIndex >= 0) {
-              const updatedUsers = [...prev];
-              const [user] = updatedUsers.splice(userIndex, 1);
-              user.unread = (user.unread || 0) + 1;
-              updatedUsers.unshift(user);
-              return updatedUsers;
-            }
-            const newUser = {
-              _id: message.from,
-              name: message.senderName || 'Unknown',
-              unread: 1,
-            };
-            return [newUser, ...prev];
-          });
-        }
-      }
+  if (message.from !== currentUser._id) {
+    // Check if we're currently offline
+    if (!navigator.onLine) {
+      // Store message for later processing
+      const offlineMessages = localStorage.getItem(`offline_messages_${currentUser._id}`);
+      const messages = offlineMessages ? JSON.parse(offlineMessages) : [];
+      messages.push(message);
+      localStorage.setItem(`offline_messages_${currentUser._id}`, JSON.stringify(messages));
+      return;
     }
+    
+    if (activeUser && message.from === activeUser._id) {
+      setMessages(prev => [...prev, message]);
+      scrollToBottomSoon();
+      
+      socket.emit('message:seen', { messageId: message._id, to: message.from });
+    } else {
+      setUsers(prev => {
+        const userIndex = prev.findIndex(u => u._id === message.from);
+        if (userIndex >= 0) {
+          const updatedUsers = [...prev];
+          const [user] = updatedUsers.splice(userIndex, 1);
+          user.unread = (user.unread || 0) + 1;
+          updatedUsers.unshift(user);
+          return updatedUsers;
+        }
+        const newUser = {
+          _id: message.from,
+          name: message.senderName || 'Unknown',
+          unread: 1,
+        };
+        return [newUser, ...prev];
+      });
+    }
+  }
+}
     
     function onMessageSent({ message }) {
       if (message.from === currentUser._id) {
@@ -1215,3 +1321,32 @@ export default function Chat() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
