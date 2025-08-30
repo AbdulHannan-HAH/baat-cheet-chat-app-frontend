@@ -309,3 +309,26 @@
     bottom: 110px; /* Slightly higher on mobile too */
   }
 }
+
+/* Fix for Toastify positioning */
+.Toastify__toast-container {
+  position: fixed !important;
+  top: 20px !important;
+  right: 20px !important;
+  z-index: 9999 !important;
+  max-width: 350px !important;
+}
+
+.Toastify__toast {
+  border-radius: 8px !important;
+  margin-bottom: 10px !important;
+}
+
+.Toastify__close-button {
+  align-self: center !important;
+  opacity: 0.7 !important;
+}
+
+.Toastify__close-button:hover {
+  opacity: 1 !important;
+}
