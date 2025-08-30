@@ -595,15 +595,15 @@ export default function Chat() {
       return;
     }
 
-    if (t.match(/^(who are you|what is your purpose|introduce yourself|tum kaun ho|tumhara kaam kya hai)$/i)) {
+    if (t.match(/^(who are you|what is your purpose|introduce yourself|tum kaun ho|tumhara kaam kya hai|tumhara maqsad kia ha|tumhara purpose kia ha)$/i)) {
       speak('I am Jarvis. I am your personal assistant for this chat application, developed by Hafiz Abdul Hannan.');
       setAssistantHint('Introduced myself');
       return;
     }
     
     if (t.match(/^(what is the nickname of developer?| Hafiz abdul hannan ka nickname kia ha?| )$/i)) {
-      speak('Nixkname of Hafiz Abdul Hannan is hah');
-      setAssistantHint('Introduced myself');
+      speak('Nickname of Hafiz Abdul Hannan is hah');
+      setAssistantHint('Introduced Developer');
       return;
     }
 
@@ -720,8 +720,7 @@ export default function Chat() {
   };
 
   const filteredUsers = users.filter(u =>
-    u.name?.toLowerCase().includes(searchText.toLowerCase()) ||
-    u.email?.toLowerCase().includes(searchText.toLowerCase())
+    u.name?.toLowerCase().includes(searchText.toLowerCase()) 
   );
 
   return (
