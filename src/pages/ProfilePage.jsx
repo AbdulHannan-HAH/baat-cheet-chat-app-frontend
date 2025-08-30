@@ -163,8 +163,8 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="dashboard-container" data-theme={theme} style={{ maxWidth: "800px", margin: "0 auto", padding: "40px 20px" }}>
-      {/* Toast Container for notifications */}
+    <div className="dashboard-container" data-theme={theme} style={{ maxWidth: "800px", margin: "0 auto", padding: "40px 20px", position: "relative" }}>
+      {/* Toast Container for notifications - Fixed positioning */}
       <ToastContainer
         position="top-right"
         autoClose={3000}
@@ -176,6 +176,13 @@ export default function ProfilePage() {
         draggable
         pauseOnHover
         theme={theme === 'dark' ? 'dark' : 'light'}
+        style={{
+          position: "fixed",
+          top: "20px",
+          right: "20px",
+          zIndex: 9999,
+          maxWidth: "350px"
+        }}
       />
       
       <div style={{ 
@@ -183,7 +190,9 @@ export default function ProfilePage() {
         borderRadius: "16px", 
         padding: "32px",
         boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-        color: "var(--text-color, #000000)"
+        color: "var(--text-color, #000000)",
+        position: "relative",
+        zIndex: 1
       }}>
         <h1 style={{ fontSize: "28px", fontWeight: "bold", marginBottom: "8px", color: "var(--heading-color, #333)" }}>
           Profile Settings
