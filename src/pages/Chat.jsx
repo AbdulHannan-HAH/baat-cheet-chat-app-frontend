@@ -195,122 +195,35 @@ export default function Chat() {
     function onTypingStop({ from }) { 
       setTypingFrom(prev => prev === from ? null : prev); 
     }
-
-
-
-
-
-
-
-
-useEffect(() => {
-  function onContactsUpdated({ contacts }) {
-    // Update the users list with unread counts from contacts
-    setUsers(prev => {
-      const updatedUsers = prev.map(user => {
-        const contact = contacts.find(c => c.userId.toString() === user._id);
-        if (contact) {
-          return { ...user, unread: contact.unreadCount || 0 };
-        }
-        return user;
-      });
-      
-      // Add any new contacts that aren't in the current users list
-      contacts.forEach(contact => {
-        if (!updatedUsers.some(u => u._id === contact.userId.toString())) {
-          updatedUsers.push({
-            _id: contact.userId.toString(),
-            name: contact.name,
-            avatarUrl: contact.avatarUrl,
-            unread: contact.unreadCount || 0,
-            online: false, // Default to offline
-            lastSeen: null
-          });
-        }
-      });
-      
-      return updatedUsers;
-    });
-  }
-  
-  function onContactsList({ contacts }) {
-    // Initialize users list with contacts data
-    const contactUsers = contacts.map(contact => ({
-      _id: contact.userId._id.toString(),
-      name: contact.userId.name,
-      avatarUrl: contact.userId.avatarUrl,
-      unread: contact.unreadCount || 0,
-      online: contact.userId.online || false,
-      lastSeen: contact.userId.lastSeen || null
-    }));
-    
-    setUsers(contactUsers);
-  }
-
-  socket.on('contacts:updated', onContactsUpdated);
-  socket.on('contacts:list', onContactsList);
-  
-  // Request contacts on component mount
-  socket.emit('contacts:request');
-  
-  return () => {
-    socket.off('contacts:updated', onContactsUpdated);
-    socket.off('contacts:list', onContactsList);
-  };
-}, [socket]);
-
-
-
     
     function onMessageNew({ message }) {
-  if (message.from !== currentUser._id) {
-    if (activeUser && message.from === activeUser._id) {
-      setMessages(prev => [...prev, message]);
-      scrollToBottomSoon();
-      
-      socket.emit('message:seen', { messageId: message._id, to: message.from });
-    } else {
-      setUsers(prev => {
-        const userIndex = prev.findIndex(u => u._id === message.from);
-        if (userIndex >= 0) {
-          const updatedUsers = [...prev];
-          const [user] = updatedUsers.splice(userIndex, 1);
-          user.unread = (user.unread || 0) + 1;
-          updatedUsers.unshift(user);
-          return updatedUsers;
-        }
-        
-        // If user not found in list, fetch their details and add them
-        // This ensures offline users appear in the contact list
-        (async () => {
-          try {
-            // You might need to create an API endpoint to get user by ID
-            const response = await fetch(`/api/user/${message.from}`);
-            const userData = await response.json();
-            
-            if (userData) {
-              setUsers(prev => {
-                const newUser = {
-                  _id: userData._id,
-                  name: userData.name,
-                  avatarUrl: userData.avatarUrl,
-                  unread: 1,
-                  online: false,
-                  lastSeen: userData.lastSeen
-                };
-                return [newUser, ...prev];
-              });
+      if (message.from !== currentUser._id) {
+        if (activeUser && message.from === activeUser._id) {
+          setMessages(prev => [...prev, message]);
+          scrollToBottomSoon();
+          
+          socket.emit('message:seen', { messageId: message._id, to: message.from });
+        } else {
+          setUsers(prev => {
+            const userIndex = prev.findIndex(u => u._id === message.from);
+            if (userIndex >= 0) {
+              const updatedUsers = [...prev];
+              const [user] = updatedUsers.splice(userIndex, 1);
+              user.unread = (user.unread || 0) + 1;
+              updatedUsers.unshift(user);
+              return updatedUsers;
             }
-          } catch (error) {
-            console.error('Error fetching user details:', error);
-          }
-        })();
-        
-        return prev;
-      });
+            const newUser = {
+              _id: message.from,
+              name: message.senderName || 'Unknown',
+              unread: 1,
+            };
+            return [newUser, ...prev];
+          });
+        }
+      }
     }
-  }
-}
+    
     function onMessageSent({ message }) {
       if (message.from === currentUser._id) {
         setMessages(prev => [...prev, message]); 
