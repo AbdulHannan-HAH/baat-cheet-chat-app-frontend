@@ -15,6 +15,7 @@ export default function ProfilePage() {
   const fileInputRef = useRef(null);
   const bioRef = useRef(null);
   const emojiPickerRef = useRef(null);
+  const toastShownRef = useRef({}); // To track which toasts have been shown
 
   const [formData, setFormData] = useState({
     name: "",
@@ -22,6 +23,28 @@ export default function ProfilePage() {
     bio: "",
     phone: ""
   });
+
+  // Custom toast function to prevent duplicates
+  const showToast = (message, type = "default") => {
+    const toastId = `${type}-${message}`;
+    
+    if (!toastShownRef.current[toastId]) {
+      toastShownRef.current[toastId] = true;
+      
+      if (type === "error") {
+        toast.error(message);
+      } else if (type === "success") {
+        toast.success(message);
+      } else {
+        toast(message);
+      }
+      
+      // Reset after 5 seconds to allow showing again if needed
+      setTimeout(() => {
+        delete toastShownRef.current[toastId];
+      }, 5000);
+    }
+  };
 
   // Load user profile data
   useEffect(() => {
@@ -40,7 +63,7 @@ export default function ProfilePage() {
         }
       } catch (err) {
         console.error("Failed to load profile:", err);
-        toast.error("Failed to load profile data");
+        showToast("Failed to load profile data", "error");
       } finally {
         setLoading(false);
       }
@@ -99,6 +122,10 @@ export default function ProfilePage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Prevent multiple submissions
+    if (saving) return;
+    
     setSaving(true);
 
     try {
@@ -108,13 +135,13 @@ export default function ProfilePage() {
       
       if (data.success) {
         setUser(data.user);
-        toast.success("Profile updated successfully!");
+        showToast("Profile updated successfully!", "success");
       } else {
-        toast.error(data.message || "Failed to update profile");
+        showToast(data.message || "Failed to update profile", "error");
       }
     } catch (err) {
       console.error("Profile update error:", err);
-      toast.error(err.response?.data?.message || "Failed to update profile");
+      showToast(err.response?.data?.message || "Failed to update profile", "error");
     } finally {
       setSaving(false);
     }
@@ -128,6 +155,9 @@ export default function ProfilePage() {
   };
 
   const handleAvatarUpload = async (file) => {
+    // Prevent multiple uploads
+    if (uploading) return;
+    
     setUploading(true);
 
     try {
@@ -138,13 +168,13 @@ export default function ProfilePage() {
       
       if (data.success) {
         setUser(data.user);
-        toast.success("Avatar uploaded successfully!");
+        showToast("Avatar uploaded successfully!", "success");
       } else {
-        toast.error(data.message || "Failed to upload avatar");
+        showToast(data.message || "Failed to upload avatar", "error");
       }
     } catch (err) {
       console.error("Avatar upload error:", err);
-      toast.error(err.response?.data?.message || "Failed to upload avatar");
+      showToast(err.response?.data?.message || "Failed to upload avatar", "error");
     } finally {
       setUploading(false);
     }
@@ -169,7 +199,7 @@ export default function ProfilePage() {
         position="top-right"
         autoClose={3000}
         hideProgressBar={false}
-        newestOnTop={false}
+        newestOnTop={true}
         closeOnClick
         rtl={false}
         pauseOnFocusLoss
