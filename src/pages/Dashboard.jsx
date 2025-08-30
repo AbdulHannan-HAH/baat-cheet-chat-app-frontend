@@ -116,7 +116,7 @@ Jarvis Features        </button>
             </p>
 
             <div className="manual-section">
-              <h3>Jarvis Introduction </h3>
+              <h3>🤖 Jarvis Introduction </h3>
               <ul>
                 <li><b>English:</b> "Who are you? , What is your purpose?"</li>
                 <li><b>Urdu:</b> "Tumhara kia maqsad ha"</li>
