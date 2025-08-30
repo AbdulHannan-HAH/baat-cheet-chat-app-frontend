@@ -54,6 +54,7 @@ export default function Chat() {
   const chunksRef = useRef([]);
   const bottomRef = useRef(null);
   const lastProcessedRef = useRef({ command: '', time: 0 });
+  const commandTimeoutRef = useRef(null);
 
   const socket = useMemo(() => getSocket(), []);
 
@@ -386,6 +387,28 @@ export default function Chat() {
     }
   };
 
+  // Check for Urdu voice support
+  useEffect(() => {
+    const checkUrduSupport = () => {
+      if (window.speechSynthesis) {
+        const voices = window.speechSynthesis.getVoices();
+        const hasUrduVoice = voices.some(voice => 
+          voice.lang.includes('ur') || voice.lang.includes('UR') || voice.lang.includes('Urdu')
+        );
+        
+        if (!hasUrduVoice) {
+          setAssistantHint('Urdu voice not available. Try Chrome browser for better Urdu support.');
+        }
+      }
+    };
+    
+    // Chrome loads voices asynchronously
+    if (window.speechSynthesis) {
+      window.speechSynthesis.onvoiceschanged = checkUrduSupport;
+      checkUrduSupport();
+    }
+  }, []);
+
   // =============== JARVIS: Speech Recognition ===============
   useEffect(() => {
     // Only initialize once
@@ -471,7 +494,7 @@ export default function Chat() {
         console.log('Recognition stop failed:', e); 
       }
     };
-  }, [assistantLang, users, hasInitialized]); // Removed listening from dependencies
+  }, [assistantLang, users, hasInitialized]);
 
   const toggleListening = () => {
     const rec = recognitionRef.current;
@@ -496,15 +519,52 @@ export default function Chat() {
         console.log('Manual start failed:', e);
         setListening(false);
       }
+      
+      // Auto-stop after 10 seconds of inactivity
+      if (commandTimeoutRef.current) {
+        clearTimeout(commandTimeoutRef.current);
+      }
+      commandTimeoutRef.current = setTimeout(() => {
+        if (listening && !recognizing) {
+          toggleListening();
+        }
+      }, 10000);
     }
   };
 
   const speak = (text) => {
     if (!window.speechSynthesis) return;
+    
+    // Stop any ongoing speech
+    window.speechSynthesis.cancel();
+    
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = assistantLang;
-    utterance.rate = 0.9;
+    
+    // Detect if the text contains Urdu characters
+    const hasUrdu = /[\u0600-\u06FF]/.test(text);
+    
+    if (hasUrdu) {
+      // Try to find an Urdu voice
+      const voices = window.speechSynthesis.getVoices();
+      const urduVoice = voices.find(voice => 
+        voice.lang.includes('ur') || voice.lang.includes('UR') || voice.lang.includes('Urdu')
+      );
+      
+      if (urduVoice) {
+        utterance.voice = urduVoice;
+        utterance.lang = urduVoice.lang;
+      } else {
+        // Fallback to English if no Urdu voice found
+        utterance.lang = 'en-US';
+        console.warn('Urdu voice not available, falling back to English');
+      }
+    } else {
+      utterance.lang = assistantLang;
+    }
+    
+    utterance.rate = 0.8; // Slower rate for better clarity
     utterance.pitch = 1;
+    
     window.speechSynthesis.speak(utterance);
   };
 
@@ -589,18 +649,38 @@ export default function Chat() {
     const now = new Date();
     const normalizedText = normalize(text);
     
+    // Check if Urdu voice is available
+    const voices = window.speechSynthesis?.getVoices() || [];
+    const hasUrduVoice = voices.some(voice => 
+      voice.lang.includes('ur') || voice.lang.includes('UR') || voice.lang.includes('Urdu')
+    );
+    
     if (normalizedText.includes('aaj ki date') || 
         normalizedText.includes('aj ki date') || 
         normalizedText.includes('date kya hai') ||
         normalizedText.includes('aaj kitna tarikh hai')) {
+      
       const dateStr = now.toLocaleDateString('ur-PK', {
         weekday: 'long',
         year: 'numeric',
         month: 'long',
         day: 'numeric'
       });
-      speak(`آج کی تاریخ ${dateStr} ہے`);
-      setAssistantHint(`Today's date: ${dateStr}`);
+      
+      if (hasUrduVoice) {
+        speak(`آج کی تاریخ ${dateStr} ہے`);
+        setAssistantHint(`Today's date: ${dateStr}`);
+      } else {
+        // Fallback to English pronunciation
+        const englishDate = now.toLocaleDateString('en-US', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+        speak(`Today's date is ${englishDate}`);
+        setAssistantHint(`Today's date: ${dateStr}`);
+      }
       return true;
     }
     
@@ -608,20 +688,42 @@ export default function Chat() {
         normalizedText.includes('kitne baj gaye') ||
         normalizedText.includes('time kya hai') ||
         normalizedText.includes('abhi time kya hua')) {
+      
       const timeStr = now.toLocaleTimeString('ur-PK', {
         hour: '2-digit',
         minute: '2-digit'
       });
-      speak(`اب کا وقت ${timeStr} ہے`);
-      setAssistantHint(`Current time: ${timeStr}`);
+      
+      if (hasUrduVoice) {
+        speak(`اب کا وقت ${timeStr} ہے`);
+        setAssistantHint(`Current time: ${timeStr}`);
+      } else {
+        // Fallback to English pronunciation
+        const englishTime = now.toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true
+        });
+        speak(`Current time is ${englishTime}`);
+        setAssistantHint(`Current time: ${timeStr}`);
+      }
       return true;
     }
     
     if (normalizedText.includes('aaj kaun sa din hai') || 
         normalizedText.includes('aaj kya din hai')) {
+      
       const dayStr = now.toLocaleDateString('ur-PK', { weekday: 'long' });
-      speak(`آج ${dayStr} ہے`);
-      setAssistantHint(`Today is ${dayStr}`);
+      
+      if (hasUrduVoice) {
+        speak(`آج ${dayStr} ہے`);
+        setAssistantHint(`Today is ${dayStr}`);
+      } else {
+        // Fallback to English pronunciation
+        const englishDay = now.toLocaleDateString('en-US', { weekday: 'long' });
+        speak(`Today is ${englishDay}`);
+        setAssistantHint(`Today is ${dayStr}`);
+      }
       return true;
     }
     
@@ -659,7 +761,7 @@ export default function Chat() {
       return true;
     }
     
-    if (t.match(/^(what is the nickname of developer?| Hafiz abdul hannan ka nickname kia ha?| )$/i)) {
+    if (t.match(/^(what is the nickname of developer?|hafiz abdul hannan ka nickname kia ha?)$/i)) {
       speak('Nickname of Hafiz Abdul Hannan is hah');
       setAssistantHint('Introduced Developer');
       setIsProcessing(false);
@@ -815,13 +917,10 @@ export default function Chat() {
             {/* Jarvis button in search box for mobile */}
             {isMobileView && (
               <button
-                onClick={() => {
-                  // Add a small delay to ensure state is updated
-                  setTimeout(toggleListening, 100);
-                }}
+                onClick={toggleListening}
                 className={`jarvis-button mobile-jarvis-button ${listening ? 'listening' : ''}`}
                 title={listening ? 'Stop Jarvis' : 'Start Jarvis'}
-                disabled={recognizing} // Prevent double clicks
+                disabled={recognizing || isProcessing}
               >
                 {listening ? '🛑 Stop' : '🤖 Jarvis'}
               </button>
@@ -922,6 +1021,14 @@ export default function Chat() {
             {/* Jarvis controls - hidden on mobile since it's in the search box */}
             {!isMobileView && (
               <div className="header-right">
+                <select 
+                  value={assistantLang} 
+                  onChange={(e) => setAssistantLang(e.target.value)}
+                  className="language-select"
+                >
+                  <option value="en-US">English</option>
+                  <option value="ur-PK">Urdu</option>
+                </select>
                 <button
                   onClick={toggleListening}
                   className={`jarvis-button ${listening ? 'listening' : ''}`}
