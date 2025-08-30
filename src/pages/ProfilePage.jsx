@@ -2,21 +2,54 @@ import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../context/AuthContext";
 import { profileApi } from "../lib/api";
 import EmojiPicker from "emoji-picker-react";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import "./Dashboard.css";
 
-// Toast configuration - defined once outside component
-const toastConfig = {
-  position: "top-right",
-  autoClose: 3000,
-  hideProgressBar: false,
-  newestOnTop: true,
-  closeOnClick: true,
-  rtl: false,
-  pauseOnFocusLoss: true,
-  draggable: true,
-  pauseOnHover: true
+// Custom Notification Component
+const Notification = ({ message, type, onClose }) => {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onClose();
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [onClose]);
+
+  return (
+    <div 
+      className={`notification ${type}`}
+      style={{
+        position: "fixed",
+        top: "20px",
+        right: "20px",
+        padding: "15px 20px",
+        borderRadius: "8px",
+        color: "white",
+        fontWeight: "500",
+        zIndex: 9999,
+        maxWidth: "350px",
+        boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+        animation: "slideIn 0.3s ease-out",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center"
+      }}
+    >
+      <span>{message}</span>
+      <button 
+        onClick={onClose}
+        style={{
+          background: "transparent",
+          border: "none",
+          color: "white",
+          cursor: "pointer",
+          marginLeft: "15px",
+          fontSize: "18px"
+        }}
+      >
+        ×
+      </button>
+    </div>
+  );
 };
 
 export default function ProfilePage() {
@@ -25,10 +58,10 @@ export default function ProfilePage() {
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [notification, setNotification] = useState(null);
   const fileInputRef = useRef(null);
   const bioRef = useRef(null);
   const emojiPickerRef = useRef(null);
-  const toastShownRef = useRef({});
 
   const [formData, setFormData] = useState({
     name: "",
@@ -37,26 +70,14 @@ export default function ProfilePage() {
     phone: ""
   });
 
-  // Custom toast function with improved duplicate prevention
-  const showToast = (message, type = "default") => {
-    const toastId = `${type}-${message}`;
-    
-    if (!toastShownRef.current[toastId]) {
-      toastShownRef.current[toastId] = true;
-      
-      if (type === "error") {
-        toast.error(message, { toastId });
-      } else if (type === "success") {
-        toast.success(message, { toastId });
-      } else {
-        toast(message, { toastId });
-      }
-      
-      // Clear the toast ID after a delay to allow showing again if needed
-      setTimeout(() => {
-        delete toastShownRef.current[toastId];
-      }, 5000);
-    }
+  // Custom notification function
+  const showNotification = (message, type = "default") => {
+    setNotification({ message, type });
+  };
+
+  // Close notification
+  const closeNotification = () => {
+    setNotification(null);
   };
 
   // Load user profile data
@@ -76,7 +97,7 @@ export default function ProfilePage() {
         }
       } catch (err) {
         console.error("Failed to load profile:", err);
-        showToast("Failed to load profile data", "error");
+        showNotification("Failed to load profile data", "error");
       } finally {
         setLoading(false);
       }
@@ -148,13 +169,13 @@ export default function ProfilePage() {
       
       if (data.success) {
         setUser(data.user);
-        showToast("Profile updated successfully!", "success");
+        showNotification("Profile updated successfully!", "success");
       } else {
-        showToast(data.message || "Failed to update profile", "error");
+        showNotification(data.message || "Failed to update profile", "error");
       }
     } catch (err) {
       console.error("Profile update error:", err);
-      showToast(err.response?.data?.message || "Failed to update profile", "error");
+      showNotification(err.response?.data?.message || "Failed to update profile", "error");
     } finally {
       setSaving(false);
     }
@@ -181,13 +202,13 @@ export default function ProfilePage() {
       
       if (data.success) {
         setUser(data.user);
-        showToast("Avatar uploaded successfully!", "success");
+        showNotification("Avatar uploaded successfully!", "success");
       } else {
-        showToast(data.message || "Failed to upload avatar", "error");
+        showNotification(data.message || "Failed to upload avatar", "error");
       }
     } catch (err) {
       console.error("Avatar upload error:", err);
-      showToast(err.response?.data?.message || "Failed to upload avatar", "error");
+      showNotification(err.response?.data?.message || "Failed to upload avatar", "error");
     } finally {
       setUploading(false);
     }
@@ -207,18 +228,14 @@ export default function ProfilePage() {
 
   return (
     <>
-      {/* Toast Container - Only one instance should exist in your app */}
-      <ToastContainer
-        {...toastConfig}
-        theme={theme === 'dark' ? 'dark' : 'light'}
-        style={{
-          position: "fixed",
-          top: "20px",
-          right: "20px",
-          zIndex: 9999,
-          maxWidth: "350px"
-        }}
-      />
+      {/* Custom Notification */}
+      {notification && (
+        <Notification 
+          message={notification.message} 
+          type={notification.type}
+          onClose={closeNotification}
+        />
+      )}
       
       <div className="dashboard-container" data-theme={theme} style={{ maxWidth: "800px", margin: "0 auto", padding: "40px 20px", position: "relative" }}>
         <div style={{ 
@@ -474,6 +491,38 @@ export default function ProfilePage() {
             </form>
           </div>
         </div>
+        
+        {/* Add CSS animations for the notification */}
+        <style>
+          {`
+            @keyframes slideIn {
+              from {
+                transform: translateX(100%);
+                opacity: 0;
+              }
+              to {
+                transform: translateX(0);
+                opacity: 1;
+              }
+            }
+            
+            .notification.success {
+              background-color: #10B981;
+            }
+            
+            .notification.error {
+              background-color: #EF4444;
+            }
+            
+            .notification.default {
+              background-color: #3B82F6;
+            }
+            
+            [data-theme="dark"] .notification {
+              box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            }
+          `}
+        </style>
       </div>
     </>
   );
