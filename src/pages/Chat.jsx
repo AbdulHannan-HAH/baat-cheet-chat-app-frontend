@@ -54,6 +54,7 @@ export default function Chat() {
   const chunksRef = useRef([]);
   const bottomRef = useRef(null);
   const lastProcessedRef = useRef({ command: '', time: 0 });
+  const commandTimeoutRef = useRef(null);
 
   const socket = useMemo(() => getSocket(), []);
 
@@ -471,7 +472,7 @@ export default function Chat() {
         console.log('Recognition stop failed:', e); 
       }
     };
-  }, [assistantLang, users, hasInitialized]); // Removed listening from dependencies
+  }, [assistantLang, users, hasInitialized]);
 
   const toggleListening = () => {
     const rec = recognitionRef.current;
@@ -496,6 +497,16 @@ export default function Chat() {
         console.log('Manual start failed:', e);
         setListening(false);
       }
+      
+      // Auto-stop after 10 seconds of inactivity
+      if (commandTimeoutRef.current) {
+        clearTimeout(commandTimeoutRef.current);
+      }
+      commandTimeoutRef.current = setTimeout(() => {
+        if (listening && !recognizing) {
+          toggleListening();
+        }
+      }, 10000);
     }
   };
 
@@ -659,7 +670,7 @@ export default function Chat() {
       return true;
     }
     
-    if (t.match(/^(what is the nickname of developer?| Hafiz abdul hannan ka nickname kia ha?| )$/i)) {
+    if (t.match(/^(what is the nickname of developer?|hafiz abdul hannan ka nickname kia ha?)$/i)) {
       speak('Nickname of Hafiz Abdul Hannan is hah');
       setAssistantHint('Introduced Developer');
       setIsProcessing(false);
@@ -815,13 +826,10 @@ export default function Chat() {
             {/* Jarvis button in search box for mobile */}
             {isMobileView && (
               <button
-                onClick={() => {
-                  // Add a small delay to ensure state is updated
-                  setTimeout(toggleListening, 100);
-                }}
+                onClick={toggleListening}
                 className={`jarvis-button mobile-jarvis-button ${listening ? 'listening' : ''}`}
                 title={listening ? 'Stop Jarvis' : 'Start Jarvis'}
-                disabled={recognizing} // Prevent double clicks
+                disabled={recognizing || isProcessing}
               >
                 {listening ? '🛑 Stop' : '🤖 Jarvis'}
               </button>
