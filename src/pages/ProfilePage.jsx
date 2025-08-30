@@ -6,6 +6,19 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import "./Dashboard.css";
 
+// Toast configuration - defined once outside component
+const toastConfig = {
+  position: "top-right",
+  autoClose: 3000,
+  hideProgressBar: false,
+  newestOnTop: true,
+  closeOnClick: true,
+  rtl: false,
+  pauseOnFocusLoss: true,
+  draggable: true,
+  pauseOnHover: true
+};
+
 export default function ProfilePage() {
   const { user, setUser, theme } = useAuth();
   const [loading, setLoading] = useState(true);
@@ -15,7 +28,7 @@ export default function ProfilePage() {
   const fileInputRef = useRef(null);
   const bioRef = useRef(null);
   const emojiPickerRef = useRef(null);
-  const toastShownRef = useRef({}); // To track which toasts have been shown
+  const toastShownRef = useRef({});
 
   const [formData, setFormData] = useState({
     name: "",
@@ -24,7 +37,7 @@ export default function ProfilePage() {
     phone: ""
   });
 
-  // Custom toast function to prevent duplicates
+  // Custom toast function with improved duplicate prevention
   const showToast = (message, type = "default") => {
     const toastId = `${type}-${message}`;
     
@@ -32,14 +45,14 @@ export default function ProfilePage() {
       toastShownRef.current[toastId] = true;
       
       if (type === "error") {
-        toast.error(message);
+        toast.error(message, { toastId });
       } else if (type === "success") {
-        toast.success(message);
+        toast.success(message, { toastId });
       } else {
-        toast(message);
+        toast(message, { toastId });
       }
       
-      // Reset after 5 seconds to allow showing again if needed
+      // Clear the toast ID after a delay to allow showing again if needed
       setTimeout(() => {
         delete toastShownRef.current[toastId];
       }, 5000);
@@ -194,17 +207,9 @@ export default function ProfilePage() {
 
   return (
     <>
-      {/* Toast Container for notifications - Fixed positioning outside main container */}
+      {/* Toast Container - Only one instance should exist in your app */}
       <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={true}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
+        {...toastConfig}
         theme={theme === 'dark' ? 'dark' : 'light'}
         style={{
           position: "fixed",
@@ -232,7 +237,7 @@ export default function ProfilePage() {
             Manage your account information
           </p>
 
-          {/* Avatar Section - Now on top for mobile */}
+          {/* Avatar Section */}
           <div style={{ 
             display: "flex", 
             flexDirection: "column", 
@@ -318,7 +323,7 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          {/* Profile Form - Now below avatar on mobile */}
+          {/* Profile Form */}
           <div>
             <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
               <div>
