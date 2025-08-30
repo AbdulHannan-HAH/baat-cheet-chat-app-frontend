@@ -47,11 +47,13 @@ export default function Chat() {
   const [assistantHint, setAssistantHint] = useState('Click Jarvis button to activate voice commands');
   const [transcript, setTranscript] = useState('');
   const [hasInitialized, setHasInitialized] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const recognitionRef = useRef(null);
   const mediaRef = useRef(null);
   const chunksRef = useRef([]);
   const bottomRef = useRef(null);
+  const lastProcessedRef = useRef({ command: '', time: 0 });
 
   const socket = useMemo(() => getSocket(), []);
 
@@ -386,11 +388,15 @@ export default function Chat() {
 
   // =============== JARVIS: Speech Recognition ===============
   useEffect(() => {
+    // Only initialize once
+    if (recognitionRef.current) return;
+    
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SR) {
       setAssistantHint('Speech recognition not supported in this browser. Try Chrome.');
       return;
     }
+    
     const recognition = new SR();
     recognition.continuous = true;
     recognition.interimResults = true;
@@ -400,26 +406,50 @@ export default function Chat() {
       setRecognizing(true);
       setAssistantHint('Listening... speak your command');
     };
+    
     recognition.onend = () => {
       setRecognizing(false);
       if (listening) {
-        try { recognition.start(); } catch (e) { console.log('Recognition restart failed:', e); }
+        try { 
+          setTimeout(() => recognition.start(), 100);
+        } catch (e) { 
+          console.log('Recognition restart failed:', e);
+          setListening(false);
+        }
       }
     };
+    
     recognition.onerror = (e) => {
       console.warn('SR error', e.error);
+      if (e.error === 'no-speech') {
+        // This is normal when no speech is detected
+        return;
+      }
       setAssistantHint('Mic error: ' + e.error);
+      setListening(false);
     };
 
     recognition.onresult = (e) => {
       let full = '';
       for (let i = e.resultIndex; i < e.results.length; i++) {
-        full += e.results[i][0].transcript;
         if (e.results[i].isFinal) {
+          full = e.results[i][0].transcript;
           const finalText = full.trim();
-          setTranscript(finalText);
-          tryHandleCommand(finalText);
-          full = '';
+          
+          // Debounce logic to prevent duplicate processing
+          const currentTime = Date.now();
+          if (finalText && 
+              (finalText !== lastProcessedRef.current.command || 
+               currentTime - lastProcessedRef.current.time > 2000)) {
+            
+            setTranscript(finalText);
+            tryHandleCommand(finalText);
+            
+            lastProcessedRef.current = {
+              command: finalText,
+              time: currentTime
+            };
+          }
         }
       }
     };
@@ -432,22 +462,40 @@ export default function Chat() {
       setAssistantHint('Click the Jarvis button to start voice commands');
     }
 
-    return () => { try { recognition.stop(); } catch (e) { console.log('Recognition stop failed:', e); } };
-  }, [assistantLang, users, hasInitialized, listening]);
+    return () => {
+      try { 
+        if (recognitionRef.current) {
+          recognitionRef.current.stop();
+        }
+      } catch (e) { 
+        console.log('Recognition stop failed:', e); 
+      }
+    };
+  }, [assistantLang, users, hasInitialized]); // Removed listening from dependencies
 
   const toggleListening = () => {
     const rec = recognitionRef.current;
     if (!rec) return;
+    
     if (listening) {
       setListening(false);
-      rec.stop();
+      try { 
+        rec.stop(); 
+      } catch (e) {
+        console.log('Stop failed:', e);
+      }
       setAssistantHint('Jarvis stopped');
       speak('Goodbye. Take care.');
     } else {
       setTranscript('');
       setListening(true);
       setAssistantHint('Listening... speak your command');
-      try { rec.start(); } catch (e) { console.log('Manual start failed:', e); }
+      try { 
+        rec.start(); 
+      } catch (e) { 
+        console.log('Manual start failed:', e);
+        setListening(false);
+      }
     }
   };
 
@@ -581,30 +629,41 @@ export default function Chat() {
   };
 
   const tryHandleCommand = (raw) => {
+    if (isProcessing) return false;
+    setIsProcessing(true);
+    
     const t = normalize(raw);
+    console.log("Processing command:", t); // For debugging
 
-    if (handleDateTimeQuery(t)) {
-      return;
-    }
-
-    if (t.match(/^(stop|quit|exit|goodbye|ruk ja|band karo|khatam karo)$/i)) {
+    // First check if it's a stop command
+    if (t.match(/^(stop|quit|exit|goodbye|ruk ja|band karo|khatam karo|bas|rukho)$/i)) {
       setListening(false);
       recognitionRef.current?.stop();
       setAssistantHint('Jarvis stopped');
       speak('Take care. Good Bye');
-      return;
+      setIsProcessing(false);
+      return true;
     }
 
+    // Handle date/time queries
+    if (handleDateTimeQuery(t)) {
+      setIsProcessing(false);
+      return true;
+    }
+
+    // Handle introduction
     if (t.match(/^(who are you|what is your purpose|introduce yourself|tum kaun ho|tumhara kaam kya hai|tumhara maqsad kia ha|tumhara purpose kia ha)$/i)) {
       speak('I am Jarvis. I am your personal assistant for this chat application, developed by Hafiz Abdul Hannan.');
       setAssistantHint('Introduced myself');
-      return;
+      setIsProcessing(false);
+      return true;
     }
     
     if (t.match(/^(what is the nickname of developer?| Hafiz abdul hannan ka nickname kia ha?| )$/i)) {
       speak('Nickname of Hafiz Abdul Hannan is hah');
       setAssistantHint('Introduced Developer');
-      return;
+      setIsProcessing(false);
+      return true;
     }
 
     const openMatch = t.match(/^(open|go\s*to|open\s*chat\s*with|kholo|khologe|khol)\s+(.+)$/i);
@@ -614,13 +673,15 @@ export default function Chat() {
       if (!user) { 
         speak('Contact not found'); 
         setAssistantHint('Contact not found'); 
-        return; 
+        setIsProcessing(false);
+        return true; 
       }
       setActiveUser(user);
       if (isMobileView) setShowContacts(false);
       speak(`Opened chat with ${user.name || 'contact'}`);
       setAssistantHint(`Opened ${user.name}`);
-      return;
+      setIsProcessing(false);
+      return true;
     }
 
     const emojiMatch = t.match(/^send\s+(?:a\s+)?(.+?)\s+emoji\s+to\s+(.+)$/i) ||
@@ -646,18 +707,25 @@ export default function Chat() {
       }
 
       const user = bestUserByName(contactName);
-      if (!user) { speak('Contact not found'); setAssistantHint('Contact not found'); return; }
+      if (!user) { 
+        speak('Contact not found'); 
+        setAssistantHint('Contact not found'); 
+        setIsProcessing(false);
+        return true; 
+      }
 
       const emoji = getEmojiByName(emojiName);
       if (emoji) { 
         sendByAssistant(user, emoji); 
         speak(`${emojiName} emoji sent to ${user.name || 'contact'}`); 
-        return; 
+        setIsProcessing(false);
+        return true; 
       }
       else { 
         speak('Emoji not found. Try common names like happy, sad, heart, or thumbs up'); 
         setAssistantHint('Emoji not recognized'); 
-        return; 
+        setIsProcessing(false);
+        return true; 
       }
     }
 
@@ -691,9 +759,15 @@ export default function Chat() {
 
     if (name && text) {
       const user = bestUserByName(name);
-      if (!user) { speak('Contact not found'); setAssistantHint('Contact not found'); return; }
+      if (!user) { 
+        speak('Contact not found'); 
+        setAssistantHint('Contact not found'); 
+        setIsProcessing(false);
+        return true; 
+      }
       sendByAssistant(user, text);
-      return;
+      setIsProcessing(false);
+      return true;
     }
 
     const onlyName = t.match(/^(.+?)\s*(ko|chat|message|kholo|khol)?$/i);
@@ -704,11 +778,14 @@ export default function Chat() {
         if (isMobileView) setShowContacts(false);
         speak(`Opened chat with ${user.name || 'contact'}`);
         setAssistantHint(`Opened ${user.name}`);
-        return;
+        setIsProcessing(false);
+        return true;
       }
     }
 
     setAssistantHint('Command not recognized. Try: "send message to [name] saying [message]" or "send happy emoji to [name]"');
+    setIsProcessing(false);
+    return false;
   };
 
   const sendByAssistant = (user, text) => {
@@ -738,9 +815,13 @@ export default function Chat() {
             {/* Jarvis button in search box for mobile */}
             {isMobileView && (
               <button
-                onClick={toggleListening}
+                onClick={() => {
+                  // Add a small delay to ensure state is updated
+                  setTimeout(toggleListening, 100);
+                }}
                 className={`jarvis-button mobile-jarvis-button ${listening ? 'listening' : ''}`}
                 title={listening ? 'Stop Jarvis' : 'Start Jarvis'}
+                disabled={recognizing} // Prevent double clicks
               >
                 {listening ? '🛑 Stop' : '🤖 Jarvis'}
               </button>
@@ -861,6 +942,7 @@ export default function Chat() {
                   {recognizing ? '🎤' : (listening ? '🤖' : '😴')}
                 </span>
                 <span className="jarvis-text">{assistantHint}</span>
+                {isProcessing && <span className="processing-indicator"> (Processing...)</span>}
               </div>
               {transcript && (
                 <div className="transcript">
