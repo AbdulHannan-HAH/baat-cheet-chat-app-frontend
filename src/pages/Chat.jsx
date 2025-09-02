@@ -197,35 +197,32 @@ export default function Chat() {
     }
     
     function onMessageNew({ message }) {
-  if (message.from !== currentUser._id) {
-    if (activeUser && message.from === activeUser._id) {
-      setMessages(prev => [...prev, message]);
-      scrollToBottomSoon();
-      
-      socket.emit('message:seen', { messageId: message._id, to: message.from });
-    } else {
-      setUsers(prev => {
-        const userIndex = prev.findIndex(u => u._id === message.from);
-        if (userIndex >= 0) {
-          const updatedUsers = [...prev];
-          const [user] = updatedUsers.splice(userIndex, 1);
-          user.unread = (user.unread || 0) + 1;
-          updatedUsers.unshift(user);
-          return updatedUsers;
+      if (message.from !== currentUser._id) {
+        if (activeUser && message.from === activeUser._id) {
+          setMessages(prev => [...prev, message]);
+          scrollToBottomSoon();
+          
+          socket.emit('message:seen', { messageId: message._id, to: message.from });
+        } else {
+          setUsers(prev => {
+            const userIndex = prev.findIndex(u => u._id === message.from);
+            if (userIndex >= 0) {
+              const updatedUsers = [...prev];
+              const [user] = updatedUsers.splice(userIndex, 1);
+              user.unread = (user.unread || 0) + 1;
+              updatedUsers.unshift(user);
+              return updatedUsers;
+            }
+            const newUser = {
+              _id: message.from,
+              name: message.senderName || 'Unknown',
+              unread: 1,
+            };
+            return [newUser, ...prev];
+          });
         }
-        // If user not found in contacts, create a new entry
-        const newUser = {
-          _id: message.from,
-          name: message.senderName || 'Unknown',
-          unread: 1,
-          online: false, // Set to offline by default
-          lastSeen: new Date().toISOString() // Set current time as last seen
-        };
-        return [newUser, ...prev];
-      });
+      }
     }
-  }
-}
     
     function onMessageSent({ message }) {
       if (message.from === currentUser._id) {
